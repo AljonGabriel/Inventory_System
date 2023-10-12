@@ -1,7 +1,7 @@
 {
-  "homepage": "https://aljongabriel.github.io/Inventory_System/client/",
+  "homepage": "https://aljongabriel.github.io/Inventory_System/client",
   "name": "client",
-  "private": false,
+  "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
