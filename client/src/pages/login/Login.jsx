@@ -1,18 +1,40 @@
 import {useState} from "react";
 import axios from "axios";
+import {toast} from "react-hot-toast";
+import {useNavigate} from "react-router-dom";
+import Auth from "../../auth/Auth";
 
 function Login() {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
     pwd: "",
   });
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    axios.get("/");
+
+    const {email, pwd} = data;
+
+    try {
+      const {data} = await axios.post("/login", {
+        email,
+        pwd,
+      });
+
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        setData({});
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
       <form onSubmit={submitHandler}>
+        <Auth />
         <label htmlFor=''>E-mail</label>
         <input
           type='email'
