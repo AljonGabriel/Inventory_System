@@ -130,6 +130,49 @@ const verifyToken = (req, res) => {
   }
 };
 
+// GET USERS
+
+//Get users by ID
+const getUserByID = async (req, res) => {
+  const id = req.params.id;
+
+  const user = await User.findById(id);
+
+  res.json({user: user});
+};
+
+//Get all users
+const getUsers = async (req, res) => {
+  const user = await User.find();
+
+  res.json({user: user});
+};
+
+//Update user by ID
+const updateUserByID = async (req, res) => {
+  //get the ID from the URL endpoint
+  const userID = req.params.id;
+
+  //get the data from the body
+  const {name, email} = req.body;
+
+  //Find the ID and update it using the data from the body
+  await User.findByIdAndUpdate(userID, {name: name, email: email});
+
+  //get the latest update and respond it as JSON
+  const updatedUser = await User.findById(userID);
+
+  res.json({user: updatedUser});
+};
+
+const deleteUserByID = async (req, res) => {
+  const userId = req.params.id;
+
+  await User.deleteOne({_id: userId});
+
+  res.json({success: "Record Deleted"});
+};
+
 module.exports = {
   test,
   registerUser,
@@ -137,4 +180,8 @@ module.exports = {
   logoutUser,
   getProfile,
   verifyToken,
+  getUsers,
+  getUserByID,
+  updateUserByID,
+  deleteUserByID,
 };

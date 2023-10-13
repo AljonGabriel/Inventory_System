@@ -11,6 +11,10 @@ const {
   logoutUser,
   getProfile,
   verifyToken,
+  getUsers,
+  getUserByID,
+  updateUserByID,
+  deleteUserByID,
 } = require("../controllers/authController");
 
 // middleware
@@ -22,10 +26,18 @@ router.use(
 );
 
 router.get("/", test);
+
+//LOGIN / REGISTER ROUTES
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 router.get("/profile", getProfile);
 router.get("/verifyToken", verifyToken);
+
+//USERS ROUTES
+router.get("/user/:id", getUserByID);
+router.get("/user/", getUsers);
+router.put("/user/:id", updateUserByID);
+router.delete("/user/:id", deleteUserByID);
 
 module.exports = router;

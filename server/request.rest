@@ -1,0 +1,16 @@
+GET  http://localhost:8000/user/6527eb61b59d41b588e5882c
+
+###
+
+PUT http://localhost:8000/user/6527e2486c0c90f9e96ee6be
+Content-Type: application/json
+
+{
+        "name": "AGAV",
+        "email": "agav@gmail.com"
+  
+}
+
+###
+
+DELETE http://localhost:8000/user/6527eb61b59d41b588e5882c

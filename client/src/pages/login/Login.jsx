@@ -3,6 +3,7 @@ import axios from "axios";
 import {toast} from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import Auth from "../../auth/Auth";
+import {Link} from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ function Login() {
         />
         <button type='submit'>Login</button>
       </form>
+      <Link to='/register'>Register</Link>
     </>
   );
 }
