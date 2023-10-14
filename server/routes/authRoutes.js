@@ -31,7 +31,11 @@ router.get("/", test);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
+
+//Get Information using cookies
 router.get("/profile", getProfile);
+
+//Authentication for users using token
 router.get("/verifyToken", verifyToken);
 
 //USERS ROUTES
