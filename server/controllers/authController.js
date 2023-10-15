@@ -38,6 +38,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       pwd: hashedPassword,
+      level: process.env.USER_LEVEL_ONE,
     });
 
     return res.json(user);
@@ -117,8 +118,8 @@ const verifyToken = (req, res) => {
   }
 
   try {
-    const verifiedtoken = jwt.verify(token, process.env.JWT_SECRET);
-    if (!!verifiedtoken) {
+    const authenticatedUserToken = jwt.verify(token, process.env.JWT_SECRET);
+    if (!!authenticatedUserToken) {
       // Token is valid
       return res.json({tokenValid: true});
     }
