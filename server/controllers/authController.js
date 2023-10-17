@@ -1,5 +1,9 @@
 const User = require("../models/user");
-const {hashPassword, comparePassword} = require("../helpers/auth");
+const {
+  hashPassword,
+  comparePassword,
+  passwordRequirements,
+} = require("../helpers/auth");
 const jwt = require("jsonwebtoken");
 
 const test = (req, res) => {
@@ -9,26 +13,45 @@ const test = (req, res) => {
 //Register Endpoint
 const registerUser = async (req, res) => {
   try {
-    const {name, email, pwd} = req.body;
-    //Check if name was entered
-    if (!name) {
-      return res.json({
-        error: "name is required",
-      });
+    const {name, email, pwd, repwd} = req.body;
+
+    // Initialize an empty response object
+    const response = {};
+
+    if (!name && !email && !pwd && !repwd) {
+      response.all = "All fields our required";
     }
 
-    if (!pwd || pwd.length < 6) {
-      return res.json({
-        error: "Password is required and should be atleast 6 characters long",
-      });
+    //Check if name was entered
+    if (!name) {
+      response.name = "Name is required";
+    }
+
+    const validatedPasswordRes = passwordRequirements(pwd, repwd);
+
+    if (!pwd) {
+      response.password = "Password is required";
+    } else if (validatedPasswordRes) {
+      response.password = validatedPasswordRes;
+    }
+
+    if (!repwd) {
+      response.repassword = "Confirm your password";
     }
 
     // check email
     const exist = await User.findOne({email});
 
-    if (exist) {
-      return res.json({
-        error: "Email is taken",
+    if (!email) {
+      response.email = "E-mail is required";
+    } else if (exist) {
+      response.email = "E-mail already taken";
+    }
+
+    // Check if there are any errors in the response
+    if (Object.keys(response).length > 0) {
+      return res.status(400).json({
+        errors: response,
       });
     }
 
@@ -47,38 +70,50 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Login Endpoint
 const loginUser = async (req, res) => {
   try {
     const {email, pwd} = req.body;
 
-    //check ifuser exists
+    let response = {};
+
+    if (!email && !pwd) {
+      response.all = "All fields are required";
+    }
+
     const user = await User.findOne({email});
 
-    if (!user) {
-      return res.json({
-        error: "No user found",
-      });
+    if (!email) {
+      response.email = "E-mail is required";
+    } else if (!user) {
+      response.email = "Email didn't match our records";
     }
 
-    //check if password match
-    const match = await comparePassword(pwd, user.pwd);
-
-    if (!match) {
-      return res.json({
-        error: "Wrong Password",
-      });
+    if (!pwd) {
+      response.pwd = "Password is required";
     } else {
-      jwt.sign(
-        {email: user.email, id: user._id, name: user.name},
-        process.env.JWT_SECRET,
-        {},
-        (err, token) => {
-          if (err) throw err;
-          res.cookie("token", token).json(user);
-        },
-      );
+      const comparedPwd = await comparePassword(pwd, user.pwd);
+
+      if (!comparedPwd) {
+        response.pwd = "Password is wrong";
+      }
     }
+
+    // Check if there are any errors in the response
+    if (Object.keys(response).length > 0) {
+      return res.status(400).json({
+        errors: response,
+      });
+    }
+
+    jwt.sign(
+      {email: user.email, id: user._id, name: user.name, role: user.role},
+      process.env.JWT_SECRET,
+      {},
+      (err, token) => {
+        if (err) throw err;
+        res.cookie("token", token).json(user);
+      },
+    );
   } catch (error) {
     console.log(error);
   }
@@ -94,17 +129,6 @@ const logoutUser = (req, res) => {
   } else {
     res.clearCookie("token");
     res.json("Logout Successfully");
-  }
-};
-
-const getProfile = (req, res) => {
-  const {token} = req.cookies;
-
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
-      if (err) throw err;
-      res.json(user);
-    });
   }
 };
 
@@ -128,6 +152,19 @@ const verifyToken = (req, res) => {
     return res.status(400).json({
       error: "Invalid Token",
     });
+  }
+};
+
+const getProfile = (req, res) => {
+  try {
+    const {token} = req.cookies;
+
+    if (token) {
+      const user = jwt.verify(token, process.env.JWT_SECRET, {});
+      res.json(user);
+    }
+  } catch (err) {
+    console.log(err);
   }
 };
 

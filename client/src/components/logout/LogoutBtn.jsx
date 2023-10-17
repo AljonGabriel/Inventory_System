@@ -7,7 +7,7 @@ function LogoutButton() {
   const handleLogout = async () => {
     try {
       await axios.get("/logout");
-      navigate("/login");
+      navigate("/Inventory_System/");
     } catch (error) {
       console.log(error);
     }

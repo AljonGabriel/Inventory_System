@@ -6,7 +6,7 @@ import LogoutButton from "../../components/logout/LogoutBtn";
 import axios from "axios";
 import {toast} from "react-hot-toast";
 
-function Home() {
+function Dashboard() {
   const {user} = useContext(UserContext);
   const [usersData, setUsersData] = useState(null);
 
@@ -32,7 +32,7 @@ function Home() {
       <div>
         <Navbar />
         <LogoutButton />
-        <h1>Home</h1>
+        <h1>Dashboard</h1>
         {user ? (
           <div>
             <h2>Hi, {user.name}</h2>
@@ -56,4 +56,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Dashboard;
