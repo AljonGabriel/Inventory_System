@@ -64,12 +64,11 @@ function Register() {
             <form className='form p-3 border rounded' onSubmit={submitHandler}>
               <header className='my-5'>
                 <h2 className='text-center'>Register</h2>
-                <div className='alert alert-secondary' role='alert'>
-                  <small>
-                    After creating an account, it is necessary for the admin to
-                    grant approval before you can log in.
-                  </small>
-                </div>
+
+                <small>
+                  After creating an account, it is necessary for the admin to
+                  grant approval before you can log in.
+                </small>
               </header>
               <div className='form-floating mb-3'>
                 <input

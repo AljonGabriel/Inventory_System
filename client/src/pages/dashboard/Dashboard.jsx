@@ -1,10 +1,9 @@
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../context/userContext";
-import Navbar from "../../components/navbar/Navbar";
-import LogoutButton from "../../components/logout/LogoutBtn";
 /* import {useNavigate} from "react-router-dom"; */
 import axios from "axios";
 import {toast} from "react-hot-toast";
+import Navbar from "./../../components/navbar/Navbar";
 
 function Dashboard() {
   const {user} = useContext(UserContext);
@@ -30,8 +29,9 @@ function Dashboard() {
   return (
     <>
       <div>
-        <Navbar />
-        <LogoutButton />
+        <header>
+          <Navbar />
+        </header>
         <h1>Dashboard</h1>
         {user ? (
           <div>

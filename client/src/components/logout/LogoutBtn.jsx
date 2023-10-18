@@ -13,7 +13,11 @@ function LogoutButton() {
     }
   };
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return (
+    <button className='btn btn-outline-danger mx-2' onClick={handleLogout}>
+      Logout
+    </button>
+  );
 }
 
 export default LogoutButton;

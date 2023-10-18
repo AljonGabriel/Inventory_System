@@ -58,7 +58,7 @@ function Login() {
     <>
       <main className='container-fluid-lg'>
         <section className='container-lg'>
-          <div className='d-flex align-items-center justify-content-center vh-100 '>
+          <section className='d-flex align-items-center justify-content-center vh-100'>
             <form className='form p-3 border rounded' onSubmit={submitHandler}>
               <header className='my-5'>
                 <h2 className='text-center'>Login</h2>
@@ -103,17 +103,17 @@ function Login() {
                 />
                 <label htmlFor=''>Password</label>
               </div>
-              <div className='d-flex justify-content-between align-items-center'>
-                <button className='btn btn-primary' type='submit'>
+              <div className='my-3'>
+                <button className='btn btn-primary w-100 my-3' type='submit'>
                   Enter
                 </button>
-                <small>
-                  Dont have account ?
-                  <Link to='/Inventory_System/register'>Register</Link>
+                <small className='text-center'>
+                  Dont have account?
+                  <Link to='/Inventory_System/register'> Register</Link>
                 </small>
               </div>
             </form>
-          </div>
+          </section>
         </section>
       </main>
     </>
