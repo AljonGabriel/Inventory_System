@@ -1,22 +1,27 @@
-import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function LogoutButton() {
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     try {
-      await axios.get("/logout");
-      navigate("/Inventory_System/");
+      // Send a request to the server to log the user out
+      await axios.get("/logout"); // This should be an endpoint on your server
+      /* 
+      navigate("/Inventory_System/"); */
+      window.location.href = "/Inventory_System/";
     } catch (error) {
-      console.log(error);
+      // Handle any errors that occur during the logout process
+      console.error(error);
     }
   };
 
+  // ...
+
   return (
-    <button className='btn btn-outline-danger mx-2' onClick={handleLogout}>
-      Logout
-    </button>
+    <div>
+      <div>
+        <button onClick={handleLogout}>Logout</button>{" "}
+      </div>
+    </div>
   );
 }
 

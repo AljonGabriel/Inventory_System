@@ -33,7 +33,7 @@ const router = createBrowserRouter([
         path: "/Inventory_System/dashboard",
         element: (
           <Auth>
-            <Dashboard />
+            {(userProfile) => <Dashboard userProfile={userProfile} />}
           </Auth>
         ),
       },

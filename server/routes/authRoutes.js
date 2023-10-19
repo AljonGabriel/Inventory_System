@@ -13,8 +13,8 @@ const {
   registerUser,
   loginUser,
   logoutUser,
-  getProfile,
-  verifyToken,
+  verifyTokenAndReturnProfile,
+
   getUsers,
   getUserByID,
   updateUserByID,
@@ -37,11 +37,8 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 
-// Define a route for retrieving user profile information
-router.get("/profile", getProfile);
-
 // Define a route for verifying a user's token
-router.get("/verifyToken", verifyToken);
+router.get("/verifyUser", verifyTokenAndReturnProfile);
 
 // Define routes related to managing user information
 router.get("/user/:id", getUserByID); // Get a user by ID

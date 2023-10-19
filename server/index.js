@@ -1,8 +1,7 @@
-// Require the dotenv module to load environment variables from a .env file
-const dotenv = require("dotenv").config();
-
 // Require the Express.js framework
 const express = require("express");
+// Require the dotenv module to load environment variables from a .env file
+const dotenv = require("dotenv").config();
 
 /* const cors = require("cors"); */ // This line appears to be a comment and is not active in the code.
 

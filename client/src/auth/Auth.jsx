@@ -6,14 +6,17 @@ import {toast} from "react-hot-toast";
 function Auth({children}) {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null); // To store user information
 
   useEffect(() => {
     axios
-      .get("/verifyToken")
+      .get("/verifyUser")
       .then((response) => {
         const {data} = response;
-        console.log(data);
+        console.log("Auth Response", data.user);
 
+        // Set the user data when authenticated
+        setUserProfile(data.user);
         setIsAuthenticated(true);
       })
       .catch((error) => {
@@ -25,9 +28,9 @@ function Auth({children}) {
           navigate("/Inventory_System/");
         }, 2000);
       });
-  }, []);
+  }, [navigate]);
 
-  return isAuthenticated ? children : null;
+  return isAuthenticated ? children(userProfile) : null;
 }
 
 export default Auth;

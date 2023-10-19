@@ -121,51 +121,35 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-  const {token} = req.cookies;
-
-  if (!token) {
-    return res.json({
-      error: "No token found",
-    });
-  } else {
-    res.clearCookie("token");
-    res.json("Logout Successfully");
-  }
+  // Clear the JWT token cookie
+  res.clearCookie("token");
+  res.status(200).json({message: "Logged out successfully"});
 };
 
-const verifyToken = (req, res) => {
+const verifyTokenAndReturnProfile = (req, res) => {
   const {token} = req.cookies;
-
-  if (!token) {
-    return res.status(400).json({
-      error: "There's no token created",
-    });
-  }
-
   try {
+    if (!token) {
+      // If there's no token, return a 400 Bad Request response
+      return res.status(401).json({
+        isLoggedin: false,
+      });
+    }
+
+    // Attempt to verify the token using the JWT_SECRET
     const authenticatedUserToken = jwt.verify(token, process.env.JWT_SECRET);
-    if (!!authenticatedUserToken) {
-      // Token is valid
-      return res.json({tokenValid: true});
+
+    // If verification is successful, the token is valid, and you can send the user's profile data
+    if (authenticatedUserToken) {
+      const user = authenticatedUserToken; // The user data is in the token
+      return res.json({user});
     }
   } catch (error) {
-    // Invalid Token
+    // If there's an error during verification, the token is invalid
+    console.error("Token verification error:", error);
     return res.status(400).json({
       error: "Invalid Token",
     });
-  }
-};
-
-const getProfile = (req, res) => {
-  try {
-    const {token} = req.cookies;
-
-    if (token) {
-      const user = jwt.verify(token, process.env.JWT_SECRET, {});
-      res.json(user);
-    }
-  } catch (err) {
-    console.log(err);
   }
 };
 
@@ -217,8 +201,7 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
-  getProfile,
-  verifyToken,
+  verifyTokenAndReturnProfile,
   getUsers,
   getUserByID,
   updateUserByID,

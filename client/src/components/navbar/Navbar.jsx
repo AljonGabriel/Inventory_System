@@ -1,14 +1,45 @@
 import {Link} from "react-router-dom";
 import Logout from "./../logout/LogoutBtn";
+import axios from "axios";
+import {useState, useEffect} from "react";
 
 function Navbar() {
+  const [userState, setUserState] = useState(false);
+
+  useEffect(() => {
+    const isLogin = () => {
+      const res = axios.get("/verifyUser");
+
+      res
+        .then((response) => {
+          const {data} = response;
+          console.log("isLogin :", data.isLoggedin);
+          setUserState(true);
+        })
+        .catch((error) => {
+          console.log("isLogin-Error :", error.response.data.isLoggedin);
+
+          setUserState(false);
+        });
+    };
+
+    isLogin();
+  }),
+    [];
+
+  console.log("Navbar State Checking:", userState);
+
   return (
     <>
       <nav className='navbar navbar-expand-lg bg-body-tertiary'>
         <div className='container-fluid'>
-          <a className='navbar-brand' href='#'>
-            Navbar
-          </a>
+          {userState ? (
+            <a className='navbar-brand' href='#'>
+              Navbar
+            </a>
+          ) : (
+            "Logout"
+          )}
           <button
             className='navbar-toggler'
             type='button'

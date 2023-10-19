@@ -12,7 +12,7 @@ function Login() {
   });
 
   const [errors, setErrors] = useState();
-  console.log("errors:", errors);
+  /*   console.log("errors:", errors); */
 
   const submitHandler = async (e) => {
     e.preventDefault();

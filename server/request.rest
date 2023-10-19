@@ -14,3 +14,7 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:8000/user/6527eb61b59d41b588e5882c
+
+###
+
+GET  http://localhost:8000/getToken
