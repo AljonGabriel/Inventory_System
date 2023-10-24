@@ -172,7 +172,7 @@ function Register() {
                 </button>
                 <small>
                   Already have an acount?
-                  <Link to='/Inventory_System/'>Login</Link>
+                  <Link to='/'>Login</Link>
                 </small>
               </div>
             </form>

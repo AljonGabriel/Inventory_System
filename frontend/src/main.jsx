@@ -1,7 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import {RouterProvider, createBrowserRouter} from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
 
 // Import the Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -16,30 +21,15 @@ import Auth from "./auth/Auth.jsx";
 //css
 import "./style/general.css";
 
-const router = createBrowserRouter([
-  {
-    path: "/Inventory_System/",
-    element: <App />,
-    children: [
-      {
-        path: "/Inventory_System/",
-        element: <Login />,
-      },
-      {
-        path: "/Inventory_System/register",
-        element: <Register />,
-      },
-      {
-        path: "/Inventory_System/dashboard",
-        element: (
-          <Auth>
-            {(userProfile) => <Dashboard userProfile={userProfile} />}
-          </Auth>
-        ),
-      },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<App />}>
+      <Route index={true} path='/' element={<Login />} />
+      <Route path='/register' element={<Register />} />
+      <Route path='/dashboard' element={<Dashboard />} />
+    </Route>,
+  ),
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
