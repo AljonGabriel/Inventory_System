@@ -4,7 +4,7 @@ import {toast} from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import FormContainer from "../../components/formContainer/FormContainer";
-import {Form, Button, Row, Col} from "react-bootstrap";
+import {Form, Button, Row, Col, FloatingLabel, Stack} from "react-bootstrap";
 
 function Login() {
   const navigate = useNavigate();
@@ -21,15 +21,43 @@ function Login() {
     <>
       <FormContainer>
         <header>
-          <h3>Log-in</h3>
+          <h1 className='text-center'>Log-in</h1>
         </header>
         <Form onSubmit={submitHandler}>
-          <Form.Group>
-            <Form.Label>Email</Form.Label>
-          </Form.Group>
-          <Button type='submit' variant='primary'>
-            Submit
-          </Button>
+          <FloatingLabel
+            controlId='emailInp'
+            label='Email address'
+            className='my-3'
+          >
+            <Form.Control
+              type='email'
+              placeholder='name@example.com'
+              value={inputData.name}
+              onChange={(e) =>
+                setInputData({...inputData, name: e.target.value})
+              }
+            />
+          </FloatingLabel>
+          <FloatingLabel controlId='pwdInp' label='Password'>
+            <Form.Control
+              type='password'
+              placeholder='Password'
+              className='my-3'
+            />
+          </FloatingLabel>
+
+          <Stack direction='horizontal'>
+            <small>
+              Request an account? <Link to='/register'>Request</Link>
+            </small>
+            <Button
+              type='submit'
+              variant='primary'
+              className='ms-auto d-md-block'
+            >
+              Submit
+            </Button>
+          </Stack>
         </Form>
       </FormContainer>
     </>

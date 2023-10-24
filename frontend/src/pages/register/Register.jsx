@@ -1,186 +1,134 @@
-import axios from "axios";
 import {useState} from "react";
+import axios from "axios";
 import {toast} from "react-hot-toast";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
+import FormContainer from "../../components/formContainer/FormContainer";
+import {Form, Button, Row, Col, FloatingLabel, Stack} from "react-bootstrap";
 
-function Register() {
+function Login() {
   const navigate = useNavigate();
   const [inputData, setInputData] = useState({
-    name: "",
+    fname: "",
+    lname: "",
     email: "",
-    pwd: "",
-    repwd: "",
+    password: "",
+    rePassword: "",
   });
-
-  const [errors, setErrors] = useState();
-  console.log("errors:", errors);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    const successMessage = "Successfully created an account, log-in anytime";
-
-    try {
-      const res = await axios.post("/register", inputData);
-
-      // Handle the successful response
-      if (res) {
-        navigate("/Inventory_System/");
-        toast.success(successMessage);
-      }
-    } catch (err) {
-      if (
-        err.response &&
-        err.response.status === 400 &&
-        err.response.data.errors
-      ) {
-        const errorMessage = err.response.data.errors;
-
-        // Create an array to collect error messages
-        const errorMessages = [];
-
-        // Iterate through the error messages and add them to the array
-        Object.keys(errorMessage).forEach((key) => {
-          const errorText = errorMessage[key];
-          errorMessages.push(errorText);
-        });
-
-        // Set the errors state with the array of error messages
-        setErrors(errorMessage);
-
-        // Toast the error messages
-        errorMessages.forEach((errorText) => {
-          toast.error(errorText);
-        });
-      }
-    }
+    console.log("submit");
   };
-
   return (
     <>
-      <main className='container-fluid-lg'>
-        <section className='container-lg'>
-          <div className='d-flex align-items-center justify-content-center vh-100 '>
-            <form className='form p-3 border rounded' onSubmit={submitHandler}>
-              <header className='my-5'>
-                <h2 className='text-center'>Register</h2>
-                <small>
-                  After creating an account, it is necessary for the admin to
-                  grant approval before you can log in.
-                </small>
-              </header>
-              <div className='form-floating mb-3'>
-                <input
-                  type='text'
-                  placeholder='John'
-                  className={`form-control ${
-                    errors && errors.name
-                      ? "is-invalid"
-                      : !errors
-                      ? ""
-                      : "is-valid"
-                  }`}
-                  id='inpName'
-                  value={inputData.name}
-                  onChange={(e) =>
-                    setInputData({...inputData, name: e.target.value})
-                  }
-                />
-                <label htmlFor='inpName'>Name</label>
-              </div>
-              <div className='form-floating mb-3'>
-                <input
-                  type='email'
-                  placeholder='email'
-                  className={`form-control ${
-                    errors && errors.email
-                      ? "is-invalid"
-                      : !errors
-                      ? ""
-                      : "is-valid"
-                  }`}
-                  id='inpEmail'
-                  value={inputData.email}
-                  onChange={(e) =>
-                    setInputData({...inputData, email: e.target.value})
-                  }
-                />
-                <label htmlFor='inpEmail'>E-mail</label>
-              </div>
-              <small>
-                <ul
-                  role='alert'
-                  className={`${
-                    errors && errors.password
-                      ? "text-danger-emphasis bg-danger-subtle border border-danger-subtle "
-                      : "text-primary-emphasis bg-primary-subtle border border-primary-subtle "
-                  } rounded-3`}
-                >
-                  <li>Minimum length: 6 characters</li>
-                  <li>Maximum length: 12 characters</li>
-                  <li>
-                    Must include a combination of:
-                    <ul>
-                      <li>Letters (both uppercase and lowercase)</li>
-                      <li>Numbers (0-9)</li>
-                      <li>
-                        At least one special character (e.g., !, @, #, $, %)
-                      </li>
-                    </ul>
-                  </li>
+      <FormContainer>
+        <header>
+          <h1 className='text-center'>Register</h1>
+        </header>
+        <Form onSubmit={submitHandler}>
+          <FloatingLabel
+            controlId='fnameInp'
+            label='First name'
+            className='my-3'
+          >
+            <Form.Control
+              type='text'
+              placeholder='John Doe'
+              value={inputData.fname}
+              onChange={(e) =>
+                setInputData({...inputData, fname: e.target.value})
+              }
+            />
+          </FloatingLabel>
+
+          <FloatingLabel
+            controlId='lnameInp'
+            label='Last name'
+            className='my-3'
+          >
+            <Form.Control
+              type='text'
+              placeholder='Last name'
+              value={inputData.lname}
+              onChange={(e) =>
+                setInputData({...inputData, lname: e.target.value})
+              }
+            />
+          </FloatingLabel>
+
+          <FloatingLabel
+            controlId='emailInp'
+            label='Email address'
+            className='my-3'
+          >
+            <Form.Control
+              type='email'
+              placeholder='name@example.com'
+              value={inputData.email}
+              onChange={(e) =>
+                setInputData({...inputData, email: e.target.value})
+              }
+            />
+          </FloatingLabel>
+          <small>
+            <ul
+              role='alert'
+              className='text-primary-emphasis bg-primary-subtle border border-primary-subtle 
+                 rounded-3'
+            >
+              <li>Minimum length: 6 characters</li>
+              <li>Maximum length: 12 characters</li>
+              <li>
+                Must include a combination of:
+                <ul>
+                  <li>Letters (both uppercase and lowercase)</li>
+                  <li>Numbers (0-9)</li>
+                  <li>At least one special character (e.g., !, @, #, $, %)</li>
                 </ul>
-              </small>
-              <div className='form-floating mb-3'>
-                <input
-                  type='password'
-                  placeholder='enter password'
-                  className={`form-control ${
-                    errors && errors.password
-                      ? "is-invalid"
-                      : !errors
-                      ? ""
-                      : "is-valid"
-                  }`}
-                  value={inputData.pwd}
-                  onChange={(e) =>
-                    setInputData({...inputData, pwd: e.target.value})
-                  }
-                />
-                <label htmlFor=''>Password</label>
-              </div>
-              <div className='form-floating mb-3'>
-                <input
-                  type='password'
-                  placeholder='Re-type password'
-                  className={`form-control ${
-                    errors && errors.repassword
-                      ? "is-invalid"
-                      : !errors
-                      ? ""
-                      : "is-valid"
-                  }`}
-                  value={inputData.repwd}
-                  onChange={(e) =>
-                    setInputData({...inputData, repwd: e.target.value})
-                  }
-                />
-                <label htmlFor=''>Confirm Password</label>
-              </div>
-              <div className='d-flex justify-content-between align-items-center'>
-                <button className='btn btn-primary' type='submit'>
-                  Create Account
-                </button>
-                <small>
-                  Already have an acount?
-                  <Link to='/'>Login</Link>
-                </small>
-              </div>
-            </form>
-          </div>
-        </section>
-      </main>
+              </li>
+            </ul>
+          </small>
+          <FloatingLabel controlId='pwdInp' label='Password'>
+            <Form.Control
+              type='password'
+              placeholder='Password'
+              className='my-3'
+              value={inputData.password}
+              onChange={(e) =>
+                setInputData({...inputData, password: e.target.value})
+              }
+            />
+          </FloatingLabel>
+
+          <FloatingLabel controlId='rePwdInp' label='Confirm Password'>
+            <Form.Control
+              type='password'
+              placeholder='Re-Password'
+              className='my-3'
+              value={inputData.rePassword}
+              onChange={(e) =>
+                setInputData({...inputData, rePassword: e.target.value})
+              }
+            />
+          </FloatingLabel>
+
+          <Stack direction='horizontal'>
+            <small>
+              Already have an account? <Link to='/'>Log-in</Link>
+            </small>
+            <Button
+              type='submit'
+              variant='primary'
+              className='ms-auto d-md-block'
+            >
+              Submit
+            </Button>
+          </Stack>
+        </Form>
+      </FormContainer>
     </>
   );
 }
 
-export default Register;
+export default Login;
