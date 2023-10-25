@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/Container";
 import {Nav, Navbar, NavDropdown, Badge} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 import {useSelector, useDispatch} from "react-redux";
 import {useLogoutMutation} from "../../slices/usersApiSlice";
@@ -31,7 +31,7 @@ function BasicExample() {
     <Navbar expand='lg' className='bg-body-tertiary'>
       <Container>
         <LinkContainer to='/'>
-          <Navbar.Brand>Inventory</Navbar.Brand>
+          <Navbar.Brand>Shappy.Inventory</Navbar.Brand>
         </LinkContainer>
         {userInfo && (
           <>
@@ -56,7 +56,14 @@ function BasicExample() {
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-              <NavDropdown title={userInfo.name} id='userName'>
+              <NavDropdown title={userInfo.fname} id='userName'>
+                {userInfo.role === "admin" && (
+                  <>
+                    <LinkContainer to='/admin'>
+                      <NavDropdown.Item>Admin</NavDropdown.Item>
+                    </LinkContainer>
+                  </>
+                )}
                 <LinkContainer to='/profile'>
                   <NavDropdown.Item>Profile</NavDropdown.Item>
                 </LinkContainer>

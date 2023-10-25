@@ -3,7 +3,11 @@ import bcrypt from "bcryptjs";
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    fname: {
+      type: String,
+      required: true,
+    },
+    lname: {
       type: String,
       required: true,
     },
@@ -13,6 +17,14 @@ const userSchema = mongoose.Schema(
       unique: true,
     },
     password: {
+      type: String,
+      required: true,
+    },
+    approve: {
+      type: Boolean,
+      required: true,
+    },
+    role: {
       type: String,
       required: true,
     },
@@ -32,7 +44,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  return (await bcrypt.compare(enteredPassword, this.password)) || null;
 };
 
 const User = mongoose.model("User", userSchema);

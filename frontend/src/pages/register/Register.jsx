@@ -1,13 +1,22 @@
 import {useState} from "react";
-import axios from "axios";
-import {toast} from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import FormContainer from "../../components/formContainer/FormContainer";
-import {Form, Button, FloatingLabel, Stack} from "react-bootstrap";
+import {
+  Form,
+  Button,
+  FloatingLabel,
+  Stack,
+  Badge,
+  Spinner,
+} from "react-bootstrap";
+
+import {useRegisterMutation} from "../../slices/usersApiSlice";
+import {toast} from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
+
   const [inputData, setInputData] = useState({
     fname: "",
     lname: "",
@@ -16,66 +25,128 @@ function Login() {
     rePassword: "",
   });
 
+  const [error, setErrors] = useState(null);
+
+  const [register, {isLoading}] = useRegisterMutation();
+
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("submit");
+    try {
+      await register(inputData).unwrap();
+      navigate("/");
+    } catch (err) {
+      const errors = err.data;
+      if (errors) {
+        for (const field in errors) {
+          toast.error(errors[field]);
+          setErrors(errors);
+        }
+      }
+    }
   };
+  console.log(error);
+
   return (
     <>
       <FormContainer>
         <header>
           <h1 className='text-center'>Register</h1>
         </header>
+
         <Form onSubmit={submitHandler}>
+          <Badge
+            pill
+            bg={error && error.fname ? `danger` : `white`}
+            text={error && error.fname ? `white` : `danger`}
+            className='mb-1'
+          >
+            * {error && error.fname ? `Required` : ``}
+          </Badge>
           <FloatingLabel
             controlId='fnameInp'
             label='First name'
-            className='my-3'
+            className='mb-2'
           >
             <Form.Control
               type='text'
               placeholder='John Doe'
+              className={`mb-2 ${
+                error && error.fname ? `is-invalid` : !error ? "" : "is-valid"
+              }`}
               value={inputData.fname}
               onChange={(e) =>
                 setInputData({...inputData, fname: e.target.value})
               }
             />
           </FloatingLabel>
-
+          <Badge
+            pill
+            bg={error && error.lname ? `danger` : `white`}
+            text={error && error.lname ? `white` : `danger`}
+            className='mb-1'
+          >
+            * {error && error.lname ? `Required` : ``}
+          </Badge>
           <FloatingLabel
             controlId='lnameInp'
             label='Last name'
-            className='my-3'
+            className='mb-2'
           >
             <Form.Control
               type='text'
               placeholder='Last name'
+              className={`mb-2 ${
+                error && error.lname ? `is-invalid` : !error ? "" : "is-valid"
+              }`}
               value={inputData.lname}
               onChange={(e) =>
                 setInputData({...inputData, lname: e.target.value})
               }
             />
           </FloatingLabel>
-
+          <Badge
+            pill
+            bg={error && error.email ? `danger` : `white`}
+            text={error && error.email ? `white` : `danger`}
+            className='mb-1'
+          >
+            * {error && error.email ? `Required` : ``}
+          </Badge>
           <FloatingLabel
             controlId='emailInp'
             label='Email address'
-            className='my-3'
+            className='mb-2'
           >
             <Form.Control
               type='email'
               placeholder='name@example.com'
+              className={`mb-2 ${
+                error && error.email ? `is-invalid` : !error ? "" : "is-valid"
+              }`}
               value={inputData.email}
               onChange={(e) =>
                 setInputData({...inputData, email: e.target.value})
               }
             />
           </FloatingLabel>
+          <Badge
+            pill
+            bg={error && error.password ? `danger` : `white`}
+            text={error && error.password ? `white` : `danger`}
+            className='mb-1'
+          >
+            * {error && error.password ? `Required` : ``}
+          </Badge>
           <small>
             <ul
               role='alert'
-              className='text-primary-emphasis bg-primary-subtle border border-primary-subtle 
-                 rounded-3'
+              className={`${
+                error && error.password
+                  ? `text-danger-emphasis bg-danger-subtle border border-danger-subtle 
+                  rounded-3`
+                  : `text-primary-emphasis bg-primary-subtle border border-primary-subtle 
+                  rounded-3`
+              }`}
             >
               <li>Minimum length: 6 characters</li>
               <li>Maximum length: 12 characters</li>
@@ -89,23 +160,43 @@ function Login() {
               </li>
             </ul>
           </small>
+
           <FloatingLabel controlId='pwdInp' label='Password'>
             <Form.Control
               type='password'
               placeholder='Password'
-              className='my-3'
+              className={`mb-2 ${
+                error && error.password
+                  ? `is-invalid`
+                  : !error
+                  ? ""
+                  : "is-valid"
+              }`}
               value={inputData.password}
               onChange={(e) =>
                 setInputData({...inputData, password: e.target.value})
               }
             />
           </FloatingLabel>
-
+          <Badge
+            pill
+            bg={error && error.rePassword ? `danger` : `white`}
+            text={error && error.rePassword ? `white` : `danger`}
+            className='mb-1'
+          >
+            * {error && error.rePassword ? `Required` : ``}
+          </Badge>
           <FloatingLabel controlId='rePwdInp' label='Confirm Password'>
             <Form.Control
               type='password'
               placeholder='Re-Password'
-              className='my-3'
+              className={`mb-2 ${
+                error && error.rePassword
+                  ? `is-invalid`
+                  : !error
+                  ? ""
+                  : "is-valid"
+              }`}
               value={inputData.rePassword}
               onChange={(e) =>
                 setInputData({...inputData, rePassword: e.target.value})
@@ -117,13 +208,28 @@ function Login() {
             <small>
               Already have an account? <Link to='/'>Log-in</Link>
             </small>
-            <Button
-              type='submit'
-              variant='primary'
-              className='ms-auto d-md-block'
-            >
-              Submit
-            </Button>
+            {isLoading ? (
+              <Button variant='primary' className='ms-auto d-md-block' disabled>
+                <Spinner
+                  as='span'
+                  animation='grow'
+                  size='sm'
+                  role='status'
+                  aria-hidden='true'
+                />
+                Loading...
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type='submit'
+                  variant='primary'
+                  className='ms-auto d-md-block'
+                >
+                  Submit
+                </Button>
+              </>
+            )}
           </Stack>
         </Form>
       </FormContainer>

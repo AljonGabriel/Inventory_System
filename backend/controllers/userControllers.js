@@ -1,6 +1,8 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import validatePassword from "../utils/validatePassword.js";
+
 // @desc Auth user/set token
 // route POST /api/users/auth
 // @access Public
@@ -9,16 +11,35 @@ const authUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({email});
 
-  if (user && (await user.matchPassword(password))) {
+  if (!email) {
+    res.status(400);
+    throw new Error("Please enter your email address");
+  }
+
+  if (!password) {
+    res.status(400);
+    throw new Error("Please enter your password");
+  }
+
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid E-mail or Password");
+  } else if (!(await user.matchPassword(password))) {
+    res.status(400);
+    throw new Error("Invalid E-mail or Password");
+  }
+  if (user.approve === true || user.role === "admin") {
     generateToken(res, user._id);
     res.status(201).json({
       _id: user._id,
-      name: user.name,
+      fname: user.fname,
+      lname: user.lname,
       email: user.email,
+      role: user.role,
     });
   } else {
     res.status(400);
-    throw new Error("Invalid E-mail or Password");
+    throw new Error("Ask your supervisor to approve the account");
   }
 });
 
@@ -26,26 +47,58 @@ const authUser = asyncHandler(async (req, res) => {
 // route POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const {name, email, password} = req.body;
+  const {fname, lname, email, password, rePassword} = req.body;
 
   const userExist = await User.findOne({email});
 
-  if (userExist) {
-    res.status(400);
-    throw new Error("User already exist");
+  let errors = {};
+  if (!fname) {
+    errors.fname = "Please enter your first name.";
   }
 
+  if (!lname) {
+    errors.lname = "Please enter your last name.";
+  }
+
+  if (!email) {
+    errors.email = "E-mail is required";
+  } else if (userExist) {
+    errors.email = "E-mail already used";
+  }
+
+  const validatePasswordRes = validatePassword(password);
+
+  if (!password) {
+    errors.password = "Please enter your password.";
+  } else if (validatePasswordRes) {
+    errors.password = validatePasswordRes;
+  }
+
+  if (!rePassword) {
+    errors.rePassword = "Please confirm your password";
+  } else if (password !== rePassword) {
+    errors.rePassword = "Password does not much";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    console.log(errors);
+    return res.status(400).json(errors);
+  }
   const user = await User.create({
-    name,
+    fname,
+    lname,
     email,
     password,
+    approve: false,
+    role: "view",
   });
 
   if (user) {
     generateToken(res, user._id);
     res.status(201).json({
       _id: user._id,
-      name: user.name,
+      fname: user.fname,
+      lname: user.lname,
       email: user.email,
     });
   } else {

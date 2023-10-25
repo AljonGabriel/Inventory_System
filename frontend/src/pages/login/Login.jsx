@@ -24,6 +24,8 @@ function Login() {
     password: "",
   });
 
+  const [errors, setErrors] = useState(null);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -41,6 +43,7 @@ function Login() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     try {
       const res = await login(inputData).unwrap();
 
@@ -49,6 +52,7 @@ function Login() {
       toast.success("Logged-in Success");
     } catch (err) {
       toast.error(err?.data?.message) || err.error;
+      setErrors(true);
     }
   };
   return (
@@ -73,6 +77,9 @@ function Login() {
               >
                 <Form.Control
                   type='email'
+                  className={`${
+                    errors && errors ? `is-invalid` : !errors ? `` : "is-valid"
+                  }`}
                   placeholder='name@example.com'
                   value={inputData.email}
                   onChange={(e) =>
@@ -84,7 +91,9 @@ function Login() {
                 <Form.Control
                   type='password'
                   placeholder='Password'
-                  className='my-3'
+                  className={`mb-3 ${
+                    errors && errors ? `is-invalid` : !errors ? `` : "is-valid"
+                  }`}
                   value={inputData.password}
                   onChange={(e) =>
                     setInputData({...inputData, password: e.target.value})
