@@ -5,7 +5,7 @@ function FormContainer({children}) {
     <>
       <Container>
         <Row className='justify-content-md-center mt-5 '>
-          <Col xs={12} lg={6} className='card p-5  rounded-3'>
+          <Col xs={12} lg={6} className='p-5'>
             {children}
           </Col>
         </Row>

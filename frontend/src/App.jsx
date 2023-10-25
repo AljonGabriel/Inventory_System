@@ -1,5 +1,8 @@
 import axios from "axios";
-import {Toaster} from "react-hot-toast";
+
+import {ToastContainer} from "react-toastify";
+import {Flip} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {Outlet} from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
@@ -12,8 +15,20 @@ axios.defaults.withCredentials = true;
 function App() {
   return (
     <>
-      <Toaster position='top-right' toastOptions={{duration: 5000}} />
       <Navbar />
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='light'
+        transition={Flip}
+      />
       <Container>
         <Outlet />
       </Container>

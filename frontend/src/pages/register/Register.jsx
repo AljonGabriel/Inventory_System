@@ -4,7 +4,7 @@ import {toast} from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import FormContainer from "../../components/formContainer/FormContainer";
-import {Form, Button, Row, Col, FloatingLabel, Stack} from "react-bootstrap";
+import {Form, Button, FloatingLabel, Stack} from "react-bootstrap";
 
 function Login() {
   const navigate = useNavigate();
