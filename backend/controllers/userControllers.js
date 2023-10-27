@@ -125,7 +125,7 @@ const logoutUser = asyncHandler((req, res) => {
 const getUserProfile = asyncHandler((req, res) => {
   const user = {
     _id: req.user._id,
-    name: req.user.name,
+    fname: req.user.fname,
   };
   console.log(user);
   res.status(200).json(user);

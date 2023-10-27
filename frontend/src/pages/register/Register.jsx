@@ -34,6 +34,7 @@ function Login() {
     try {
       await register(inputData).unwrap();
       navigate("/");
+      toast.success("Wait for your supervisor to approve your account");
     } catch (err) {
       const errors = err.data;
       if (errors) {

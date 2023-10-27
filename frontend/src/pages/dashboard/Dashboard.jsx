@@ -1,5 +1,10 @@
+import ItemsTable from "../../components/itemTable/ItemsTable";
 function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+    <>
+      <ItemsTable />
+    </>
+  );
 }
 
 export default Dashboard;

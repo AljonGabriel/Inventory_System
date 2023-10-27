@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import {notFound, errorHandler} from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
 
+import cors from "cors";
+
 import userRoutes from "./routes/userRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
 
@@ -13,6 +15,14 @@ const port = process.env.PORT || 8000;
 connectDB();
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,PUT,POST,DELETE",
+    optionsSuccessStatus: 204,
+    credentials: true, // Allow credentials (cookies, authentication)
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
