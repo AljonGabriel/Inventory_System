@@ -2,21 +2,52 @@ import {Table, Row, Col, Button} from "react-bootstrap";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
+import UpdateModal from "../updateModal/UpdateModal";
+import {toast} from "react-toastify";
 
 export default function ItemsTable() {
-  const [items, setItems] = useState([]);
+  const [fetchedItems, setFetchedItems] = useState([]);
+  const [updateTable, setUpdateTable] = useState(false);
+
+  // Callback function to handle updates
+  const handleUpdate = () => {
+    setUpdateTable(!updateTable);
+  };
 
   useEffect(() => {
-    axios
-      .get("api/items/data")
-      .then((response) => {
-        setItems(response.data);
+    fetchItems();
+  }, [updateTable]);
+
+  const fetchItems = async () => {
+    await axios
+      .get("/api/items/data")
+      .then((res) => {
+        setFetchedItems(res.data);
       })
-      .catch((error) => {
-        // Handle any errors here
-        console.error(error);
+      .catch((err) => {
+        console.log(err);
       });
-  }, [items]);
+  };
+
+  const deleteItem = async (itemID) => {
+    const shouldClose = window.confirm("Proceed to delete this item?");
+    if (shouldClose) {
+      await axios
+        .delete(`api/items/data/${itemID}`)
+        .then((res) => {
+          console.log(res);
+          handleUpdate();
+          toast.success("Deleted successfully");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  console.log(fetchedItems);
+
+  console.log(updateTable);
 
   return (
     <>
@@ -33,26 +64,32 @@ export default function ItemsTable() {
               </tr>
             </thead>
             <tbody>
-              {items.map((item, index) => {
-                return (
-                  <tr key={item._id}>
-                    <td>{index + 1}</td>
-                    <td>{item.itemName}</td>
-                    <td>{item.itemDescription}</td>
-                    <td>{item.quantity}</td>
-                    <td>
-                      <Link
-                        to={`/update/${item._id}`}
-                        className='btn btn-outline-success'
-                      >
-                        Update
-                      </Link>
-
-                      <Button variant='outline-danger'>Delete</Button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {fetchedItems.length > 0 ? (
+                <>
+                  {fetchedItems.map((item, index) => (
+                    <tr key={item._id}>
+                      <td>{index + 1}</td>
+                      <td>{item.itemName}</td>
+                      <td>{item.itemDescription}</td>
+                      <td>{item.quantity}</td>
+                      <td>
+                        <UpdateModal
+                          items={item}
+                          setUpdateTable={handleUpdate}
+                        />
+                        <Button
+                          onClick={() => deleteItem(item._id)}
+                          variant='outline-danger'
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                <h2 className='text-center'>No records found</h2>
+              )}
             </tbody>
           </Table>
         </Col>

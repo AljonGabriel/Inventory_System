@@ -40,4 +40,36 @@ const getItemData = asyncHandler(async (req, res) => {
   }
 });
 
-export {addItem, getItemData};
+// @desc Get item by ID and update t
+// route GET /api/items/data/:id
+// @access Private
+const getItemThenUpdate = asyncHandler(async (req, res) => {
+  const {id} = req.params; // Get the item ID from the URL
+
+  const {iName, iDescription, stocks} = req.body;
+
+  // Find the item by ID and update it with the data from the request body
+  const updatedItem = await Item.findByIdAndUpdate(id, {
+    itemName: iName,
+    itemDescription: iDescription,
+    quantity: stocks,
+  });
+
+  if (updatedItem) {
+    res.status(200).json(updatedItem);
+  } else {
+    res.status(404);
+    throw new Error("Item not found");
+  }
+});
+
+const deleteItem = asyncHandler(async (req, res) => {
+  const {id} = req.params; // Get the item ID from the URL
+  const deleted = await Item.findByIdAndDelete(id);
+
+  if (deleted) {
+    res.status(200).json({deleted: deleted});
+  }
+});
+
+export {addItem, getItemData, getItemThenUpdate, deleteItem};
