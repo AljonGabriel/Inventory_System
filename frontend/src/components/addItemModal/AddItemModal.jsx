@@ -1,11 +1,9 @@
 import {Button, Modal, Form} from "react-bootstrap";
 import {useState} from "react";
-import axios from "axios";
 import {toast} from "react-toastify";
+import axios from "axios";
 
-export default function UpdateModal({items, setUpdateTable}) {
-  const {_id, itemName, itemDescription, quantity} = items;
-
+export default function AddItemModal({setUpdateTable}) {
   const [inputData, setInputData] = useState({
     iName: "",
     iDescription: "",
@@ -14,49 +12,38 @@ export default function UpdateModal({items, setUpdateTable}) {
 
   const [show, setShow] = useState(false);
 
-  const handleClose = () => {
-    const shouldClose = window.confirm("Proceed to update details?");
-
-    if (shouldClose) {
-      setShow(false);
-    }
-  };
+  const handleClose = () => setShow(false);
 
   const handleShow = () => setShow(true);
 
-  const handleSubmit = async (itemID, e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.put(`api/items/data/${itemID}`, inputData);
+      await axios.post("/api/items/", inputData);
       setUpdateTable(true);
-      toast.success("Updated successfully");
+      toast.success("Added Successfully");
     } catch (err) {
-      console.log(err);
+      toast.error(err?.message?.error);
     }
-
-    console.log(itemID);
   };
-
   return (
     <>
-      <Button variant='outline-primary me-2' onClick={handleShow}>
-        Update
+      <Button variant='primary my-2' onClick={handleShow}>
+        Add Item
       </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            Update this ID: <small>{_id}</small>
-          </Modal.Title>
+          <Modal.Title>Add Item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form id='itemsUpdateForm' onSubmit={(e) => handleSubmit(_id, e)}>
+          <Form id='form' onSubmit={(e) => handleSubmit(e)}>
             <Form.Group className='mb-3' controlId='formGroupEmail'>
               <Form.Label>Item name</Form.Label>
               <Form.Control
                 type='text'
-                placeholder={itemName}
+                placeholder=''
                 value={inputData.iName}
                 onChange={(e) =>
                   setInputData({...inputData, iName: e.target.value})
@@ -68,7 +55,7 @@ export default function UpdateModal({items, setUpdateTable}) {
               <Form.Label>Item description</Form.Label>
               <Form.Control
                 type='text'
-                placeholder={itemDescription}
+                placeholder=''
                 value={inputData.iDescription}
                 onChange={(e) =>
                   setInputData({...inputData, iDescription: e.target.value})
@@ -80,7 +67,7 @@ export default function UpdateModal({items, setUpdateTable}) {
               <Form.Label>Stocks</Form.Label>
               <Form.Control
                 type='text'
-                placeholder={quantity}
+                placeholder=''
                 value={inputData.stocks}
                 onChange={(e) =>
                   setInputData({...inputData, stocks: e.target.value})
@@ -96,10 +83,10 @@ export default function UpdateModal({items, setUpdateTable}) {
           <Button
             type='submit'
             variant='primary'
-            form='itemsUpdateForm'
+            form='form'
             onClick={handleClose}
           >
-            Save Changes
+            Submit
           </Button>
         </Modal.Footer>
       </Modal>

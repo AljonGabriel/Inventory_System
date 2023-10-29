@@ -1,13 +1,18 @@
 import {Table, Row, Col, Button} from "react-bootstrap";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
-import UpdateModal from "../updateModal/UpdateModal";
+import UpdateItemModal from "../updateItemModal/UpdateItemModal";
 import {toast} from "react-toastify";
+import AddItemModal from "../addItemModal/AddItemModal";
+import {useSelector} from "react-redux";
 
 export default function ItemsTable() {
   const [fetchedItems, setFetchedItems] = useState([]);
   const [updateTable, setUpdateTable] = useState(false);
+
+  const {userInfo} = useSelector((state) => state.auth);
+
+  console.log(userInfo.role);
 
   // Callback function to handle updates
   const handleUpdate = () => {
@@ -25,7 +30,7 @@ export default function ItemsTable() {
         setFetchedItems(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        toast.success(err);
       });
   };
 
@@ -40,19 +45,21 @@ export default function ItemsTable() {
           toast.success("Deleted successfully");
         })
         .catch((err) => {
-          console.log(err);
+          toast.success(err);
         });
     }
   };
-
-  console.log(fetchedItems);
-
-  console.log(updateTable);
 
   return (
     <>
       <Row>
         <Col className='justify-content-center mt-5'>
+          {(userInfo && userInfo.role === "inventory") ||
+          userInfo.role === "admin" ? (
+            <AddItemModal setUpdateTable={handleUpdate} />
+          ) : (
+            <h2>Convert to Excel</h2>
+          )}
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -73,22 +80,33 @@ export default function ItemsTable() {
                       <td>{item.itemDescription}</td>
                       <td>{item.quantity}</td>
                       <td>
-                        <UpdateModal
-                          items={item}
-                          setUpdateTable={handleUpdate}
-                        />
-                        <Button
-                          onClick={() => deleteItem(item._id)}
-                          variant='outline-danger'
-                        >
-                          Delete
-                        </Button>
+                        {(userInfo && userInfo.role === "inventory") ||
+                        userInfo.role === "admin" ? (
+                          <>
+                            <UpdateItemModal
+                              items={item}
+                              setUpdateTable={handleUpdate}
+                            />
+                            <Button
+                              onClick={() => deleteItem(item._id)}
+                              variant='outline-danger'
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        ) : (
+                          <p>No Access</p>
+                        )}
                       </td>
                     </tr>
                   ))}
                 </>
               ) : (
-                <h2 className='text-center'>No records found</h2>
+                <tr>
+                  <td>
+                    <p className='text-center'>No records found</p>
+                  </td>
+                </tr>
               )}
             </tbody>
           </Table>

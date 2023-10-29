@@ -5,12 +5,12 @@ import Item from "../models/itemModel.js";
 // route GET /api/items/
 // @access Private
 const addItem = asyncHandler(async (req, res) => {
-  const {itemName, itemDescription, quantity} = req.body;
+  const {iName, iDescription, stocks} = req.body;
 
   const item = await Item.create({
-    itemName,
-    itemDescription,
-    quantity,
+    itemName: iName,
+    itemDescription: iDescription,
+    quantity: stocks,
   });
 
   if (item) {
