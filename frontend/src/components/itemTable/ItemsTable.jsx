@@ -58,7 +58,9 @@ export default function ItemsTable() {
           userInfo.role === "admin" ? (
             <AddItemModal setUpdateTable={handleUpdate} />
           ) : (
-            <h2>Convert to Excel</h2>
+            <Button type='button' variant='outline-primary'>
+              Convert to Excel
+            </Button>
           )}
           <Table striped bordered hover>
             <thead>
