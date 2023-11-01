@@ -40,6 +40,20 @@ const getItemData = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Get items count
+// route GET /api/items/data
+// @access Private
+const getItemsCount = asyncHandler(async (req, res) => {
+  const items = await Item.countDocuments({});
+
+  if (items) {
+    res.status(200).json(items);
+  } else {
+    res.status(404);
+    throw new Error("No Items found");
+  }
+});
+
 // @desc Get item by ID and update t
 // route GET /api/items/data/:id
 // @access Private
@@ -72,4 +86,4 @@ const deleteItem = asyncHandler(async (req, res) => {
   }
 });
 
-export {addItem, getItemData, getItemThenUpdate, deleteItem};
+export {addItem, getItemData, getItemsCount, getItemThenUpdate, deleteItem};

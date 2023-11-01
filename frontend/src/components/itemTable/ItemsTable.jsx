@@ -81,6 +81,7 @@ export default function ItemsTable() {
                       <td>{item.itemName}</td>
                       <td>{item.itemDescription}</td>
                       <td>{item.quantity}</td>
+                      <td>{new Date(item.createdAt).toLocaleString()}</td>
                       <td>
                         {(userInfo && userInfo.role === "inventory") ||
                         userInfo.role === "admin" ? (
