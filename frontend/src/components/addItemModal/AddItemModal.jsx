@@ -1,5 +1,5 @@
 import {Button, Modal, Form} from "react-bootstrap";
-import {useState, useSe} from "react";
+import {useState} from "react";
 import {toast} from "react-toastify";
 import axios from "axios";
 import {useSelector} from "react-redux";
@@ -17,6 +17,8 @@ export default function AddItemModal({setUpdateTable}) {
 
   console.log(inputData);
 
+  const [error, setErrors] = useState(null);
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -30,8 +32,15 @@ export default function AddItemModal({setUpdateTable}) {
       await axios.post("/api/items/", inputData);
       setUpdateTable(true);
       toast.success("Added Successfully");
+      handleClose();
     } catch (err) {
-      toast.error(err?.message?.error);
+      const errors = err.response.data;
+      for (const field in errors) {
+        toast.error(errors[field]);
+        setErrors(errors);
+      }
+      /*   toast.error(errors.iName) || err.error;
+      console.log(err.response.data.iName); */
     }
   };
   return (
@@ -61,6 +70,9 @@ export default function AddItemModal({setUpdateTable}) {
               <Form.Control
                 type='text'
                 placeholder='ex.T-Shirt'
+                className={
+                  error && error.iName ? "is-invalid" : !error ? "" : "is-valid"
+                }
                 value={inputData.iName}
                 onChange={(e) =>
                   setInputData({...inputData, iName: e.target.value})
@@ -73,6 +85,9 @@ export default function AddItemModal({setUpdateTable}) {
               <Form.Control
                 type='text'
                 placeholder='ex.Large T-Shirt'
+                className={
+                  error && error.iName ? "is-invalid" : !error ? "" : "is-valid"
+                }
                 value={inputData.iDescription}
                 onChange={(e) =>
                   setInputData({...inputData, iDescription: e.target.value})
@@ -84,6 +99,13 @@ export default function AddItemModal({setUpdateTable}) {
               <Form.Label>Category</Form.Label>
               <Form.Select
                 aria-label='Default select example'
+                className={
+                  error && error.category
+                    ? "is-invalid"
+                    : !error
+                    ? ""
+                    : "is-valid"
+                }
                 onChange={(e) =>
                   setInputData({...inputData, category: e.target.value})
                 }
@@ -98,8 +120,15 @@ export default function AddItemModal({setUpdateTable}) {
             <Form.Group className='mb-3' controlId='formGroupEmail'>
               <Form.Label>Stocks</Form.Label>
               <Form.Control
-                type='text'
+                type='number'
                 placeholder='ex.0-99'
+                className={
+                  error && error.stocks
+                    ? "is-invalid"
+                    : !error
+                    ? ""
+                    : "is-valid"
+                }
                 value={inputData.stocks}
                 onChange={(e) =>
                   setInputData({...inputData, stocks: e.target.value})
@@ -112,12 +141,7 @@ export default function AddItemModal({setUpdateTable}) {
           <Button variant='secondary' onClick={handleClose}>
             Close
           </Button>
-          <Button
-            type='submit'
-            variant='primary'
-            form='form'
-            onClick={handleClose}
-          >
+          <Button type='submit' variant='primary' form='form'>
             Submit
           </Button>
         </Modal.Footer>

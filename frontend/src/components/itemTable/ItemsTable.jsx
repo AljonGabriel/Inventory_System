@@ -9,6 +9,7 @@ import ButtonJsonToExcel from "../btnJSONToExcel/ButtonJsonToExcel";
 
 export default function ItemsTable() {
   const [fetchedItems, setFetchedItems] = useState([]);
+  const [itemsCount, setItemsCount] = useState();
   const [updateTable, setUpdateTable] = useState(false);
 
   const {userInfo} = useSelector((state) => state.auth);
@@ -22,6 +23,7 @@ export default function ItemsTable() {
 
   useEffect(() => {
     fetchItems();
+    getItemsCount();
   }, [updateTable]);
 
   const fetchItems = async () => {
@@ -31,11 +33,23 @@ export default function ItemsTable() {
         setFetchedItems(res.data);
       })
       .catch((err) => {
-        toast.success(err);
+        toast.error(err);
       });
   };
 
-  const deleteItem = async (itemID) => {
+  const getItemsCount = async () => {
+    await axios
+      .get("/api/items/itemsCount")
+      .then((res) => {
+        console.log(res.data);
+        setItemsCount(res.data);
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
+  };
+
+  const handleDelete = async (itemID) => {
     const shouldClose = window.confirm("Proceed to delete this item?");
     if (shouldClose) {
       await axios
@@ -70,77 +84,83 @@ export default function ItemsTable() {
 
           {userInfo.role === "none" && "No Access"}
 
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>✔️</th>
-                <th>#</th>
-                <th>Item name</th>
-                <th>Item description</th>
-                <th>Category</th>
-                <th>quantity</th>
-                <th>Appended by </th>
-                <th>Added date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fetchedItems.length > 0 ? (
-                <>
-                  {fetchedItems.map((item, index) => (
-                    <tr key={item._id}>
-                      <td>
-                        <Form>
-                          <div key={`default`} className='mb-3'>
-                            <Form.Check // prettier-ignore
-                              id={`default`}
-                            />
-                          </div>
-                        </Form>
-                      </td>
-                      <td>{index + 1}</td>
-                      <td>{item.itemName}</td>
-                      <td>{item.itemDescription}</td>
-                      <td>{item.category}</td>
-                      <td>{item.quantity}</td>
-                      <td>
-                        <b>{item.addedBy}</b>
-                      </td>
-                      <td>
-                        <p>{new Date(item.createdAt).toLocaleString()}</p>
-                      </td>
+          <p>
+            <b>Item Count :</b> {itemsCount ? itemsCount : "No Records found"}
+          </p>
 
-                      <td>
-                        {(userInfo && userInfo.role === "inventory") ||
-                        userInfo.role === "admin" ? (
-                          <>
-                            <UpdateItemModal
-                              items={item}
-                              setUpdateTable={handleUpdate}
-                            />
-                            <Button
-                              onClick={() => deleteItem(item._id)}
-                              variant='outline-danger'
-                            >
-                              Delete
-                            </Button>
-                          </>
-                        ) : (
-                          <p className='text-danger'>No Access</p>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
+          <section style={{height: 400, overflow: "auto"}}>
+            <Table striped bordered hover>
+              <thead>
                 <tr>
-                  <td>
-                    <p className='text-center'>No records found</p>
-                  </td>
+                  <th>✔️</th>
+                  <th>#</th>
+                  <th>Item name</th>
+                  <th>Item description</th>
+                  <th>Category</th>
+                  <th>quantity</th>
+                  <th>Appended by </th>
+                  <th>Added date</th>
+                  <th>Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {fetchedItems.length > 0 ? (
+                  <>
+                    {fetchedItems.map((item, index) => (
+                      <tr key={item._id}>
+                        <td>
+                          <Form>
+                            <div key={`default`} className='mb-3'>
+                              <Form.Check // prettier-ignore
+                                id={`default`}
+                              />
+                            </div>
+                          </Form>
+                        </td>
+                        <td>{index + 1}</td>
+                        <td>{item.itemName}</td>
+                        <td>{item.itemDescription}</td>
+                        <td>{item.category}</td>
+                        <td>{item.quantity}</td>
+                        <td>
+                          <b>{item.addedBy}</b>
+                        </td>
+                        <td>
+                          <p>{new Date(item.createdAt).toLocaleString()}</p>
+                        </td>
+
+                        <td>
+                          {(userInfo && userInfo.role === "inventory") ||
+                          userInfo.role === "admin" ? (
+                            <>
+                              <UpdateItemModal
+                                items={item}
+                                setUpdateTable={handleUpdate}
+                              />
+                              <Button
+                                onClick={() => handleDelete(item._id)}
+                                variant='outline-danger'
+                              >
+                                Delete
+                              </Button>
+                            </>
+                          ) : (
+                            <p className='text-danger'>No Access</p>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  <tr>
+                    <td>
+                      <p className='text-center'>No records found</p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </section>
         </Col>
       </Row>
     </>

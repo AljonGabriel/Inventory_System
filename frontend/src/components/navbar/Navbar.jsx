@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/Container";
-import {Nav, Navbar, NavDropdown, Badge} from "react-bootstrap";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import {useSelector, useDispatch} from "react-redux";
 import {useLogoutMutation} from "../../slices/usersApiSlice";

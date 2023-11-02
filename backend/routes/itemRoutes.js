@@ -8,6 +8,7 @@ import {
   getItemThenUpdate,
   deleteItem,
   exportItemsToExcel,
+  getAuditlogs,
 } from "../controllers/itemControllers.js";
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router
   .delete(protect, deleteItem);
 
 router.get("/exportItemsToExcel", protect, exportItemsToExcel);
+router.get("/audit", protect, getAuditlogs);
 
 export default router;
