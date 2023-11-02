@@ -7,6 +7,7 @@ import {
   getItemsCount,
   getItemThenUpdate,
   deleteItem,
+  exportItemsToExcel,
 } from "../controllers/itemControllers.js";
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router
   .route("/data/:id")
   .put(protect, getItemThenUpdate)
   .delete(protect, deleteItem);
+
+router.get("/exportItemsToExcel", protect, exportItemsToExcel);
 
 export default router;

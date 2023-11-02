@@ -10,8 +10,16 @@ const itemSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    category: {
+      type: String,
+      require: true,
+    },
     quantity: {
       type: Number,
+      require: true,
+    },
+    addedBy: {
+      type: String,
       require: true,
     },
   },

@@ -1,10 +1,11 @@
-import {Table, Row, Col, Button} from "react-bootstrap";
+import {Table, Row, Col, Button, Form} from "react-bootstrap";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import UpdateItemModal from "../updateItemModal/UpdateItemModal";
 import {toast} from "react-toastify";
 import AddItemModal from "../addItemModal/AddItemModal";
 import {useSelector} from "react-redux";
+import ButtonJsonToExcel from "../btnJSONToExcel/ButtonJsonToExcel";
 
 export default function ItemsTable() {
   const [fetchedItems, setFetchedItems] = useState([]);
@@ -54,21 +55,32 @@ export default function ItemsTable() {
     <>
       <Row>
         <Col className='justify-content-center mt-5'>
-          {(userInfo && userInfo.role === "inventory") ||
-          userInfo.role === "admin" ? (
+          {userInfo && userInfo.role === "inventory" && (
             <AddItemModal setUpdateTable={handleUpdate} />
-          ) : (
-            <Button type='button' variant='outline-primary'>
-              Convert to Excel
-            </Button>
           )}
+
+          {userInfo.role === "view" && <ButtonJsonToExcel />}
+
+          {userInfo.role === "admin" && (
+            <>
+              <ButtonJsonToExcel />
+              <AddItemModal setUpdateTable={handleUpdate} />
+            </>
+          )}
+
+          {userInfo.role === "none" && "No Access"}
+
           <Table striped bordered hover>
             <thead>
               <tr>
+                <th>✔️</th>
                 <th>#</th>
                 <th>Item name</th>
                 <th>Item description</th>
+                <th>Category</th>
                 <th>quantity</th>
+                <th>Appended by </th>
+                <th>Added date</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -77,11 +89,27 @@ export default function ItemsTable() {
                 <>
                   {fetchedItems.map((item, index) => (
                     <tr key={item._id}>
+                      <td>
+                        <Form>
+                          <div key={`default`} className='mb-3'>
+                            <Form.Check // prettier-ignore
+                              id={`default`}
+                            />
+                          </div>
+                        </Form>
+                      </td>
                       <td>{index + 1}</td>
                       <td>{item.itemName}</td>
                       <td>{item.itemDescription}</td>
+                      <td>{item.category}</td>
                       <td>{item.quantity}</td>
-                      <td>{new Date(item.createdAt).toLocaleString()}</td>
+                      <td>
+                        <b>{item.addedBy}</b>
+                      </td>
+                      <td>
+                        <p>{new Date(item.createdAt).toLocaleString()}</p>
+                      </td>
+
                       <td>
                         {(userInfo && userInfo.role === "inventory") ||
                         userInfo.role === "admin" ? (
@@ -98,7 +126,7 @@ export default function ItemsTable() {
                             </Button>
                           </>
                         ) : (
-                          <p>No Access</p>
+                          <p className='text-danger'>No Access</p>
                         )}
                       </td>
                     </tr>
