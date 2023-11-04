@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 // ES6 Modules or TypeScript
 import Swal from "sweetalert2";
 
-export default function UpdateModal({items, setUpdateTable}) {
+export default function UpdateModal({items, mountProps}) {
   const {_id, itemName, itemDescription, quantity} = items;
 
   const [inputData, setInputData] = useState({
@@ -29,7 +29,7 @@ export default function UpdateModal({items, setUpdateTable}) {
     if (shouldClose) {
       try {
         await axios.put(`api/items/data/${itemID}`, inputData);
-        setUpdateTable(true);
+        mountProps();
         toast.success("Updated successfully");
       } catch (err) {
         toast.error(err?.message?.error);

@@ -4,7 +4,7 @@ import {toast} from "react-toastify";
 import axios from "axios";
 import {useSelector} from "react-redux";
 
-export default function AddItemModal({setUpdateTable}) {
+export default function AddItemModal({mountProps}) {
   const {userInfo} = useSelector((state) => state.auth);
 
   const [inputData, setInputData] = useState({
@@ -14,8 +14,6 @@ export default function AddItemModal({setUpdateTable}) {
     category: "",
     stocks: "",
   });
-
-  console.log(inputData);
 
   const [error, setErrors] = useState(null);
 
@@ -30,7 +28,7 @@ export default function AddItemModal({setUpdateTable}) {
 
     try {
       await axios.post("/api/items/", inputData);
-      setUpdateTable(true);
+      mountProps(true);
       toast.success("Added Successfully");
       handleClose();
     } catch (err) {

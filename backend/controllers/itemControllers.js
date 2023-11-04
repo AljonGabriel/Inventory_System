@@ -156,6 +156,18 @@ const getItemThenUpdate = asyncHandler(async (req, res) => {
   });
 
   if (updatedItem) {
+    const newLogEntry = new AuditLogs({
+      action: "Updated item",
+      itemID: updatedItem._id,
+      item: updatedItem.itemName,
+      itemDes: updatedItem.itemDescription,
+      category: updatedItem.category,
+      userID: req.user._id,
+      user: req.user.fname + " " + req.user.lname,
+      timestamp: new Date(),
+    });
+
+    await newLogEntry.save();
     res.status(200).json(updatedItem);
   } else {
     res.status(404);
@@ -184,6 +196,37 @@ const deleteItem = asyncHandler(async (req, res) => {
 
     await newLogEntry.save();
     res.status(200).json({deleted: deleted});
+  }
+});
+
+// @desc Delete multiple Items
+// route GET /api/items/deleteMultipleData
+// @access Private
+const deleteMultipleData = asyncHandler(async (req, res) => {
+  const {itemIds} = req.body;
+  // Use the list of item IDs to delete items
+  const deleted = await Item.deleteMany({_id: {$in: itemIds}});
+
+  console.log(deleted);
+
+  if (deleted) {
+    /*    const newLogEntry = new AuditLogs({
+      action: "Deleted Item",
+      itemID: deleted._id,
+      item: deleted.itemName,
+      itemDes: deleted.itemDescription,
+      category: deleted.category,
+      userID: req.user._id,
+      user: req.user.fname + " " + req.user.lname,
+      timestamp: new Date(),
+    });
+
+    await newLogEntry.save(); */
+
+    res.status(200).json(deleted);
+  } else {
+    res.status(400);
+    throw new Error("Error deleting");
   }
 });
 
@@ -260,6 +303,7 @@ export {
   getItemsCount,
   getItemThenUpdate,
   deleteItem,
+  deleteMultipleData,
   exportItemsToExcel,
   getAuditlogs,
 };

@@ -6,25 +6,27 @@ import {toast} from "react-toastify";
 import AddItemModal from "../addItemModal/AddItemModal";
 import {useSelector} from "react-redux";
 import ButtonJsonToExcel from "../btnJSONToExcel/ButtonJsonToExcel";
+import ButtonMultipleDelete from "../buttonMultipleDelete/ButtonMultipleDelete";
+import CountItems from "../../context/countItems/CountItems";
 
-export default function ItemsTable() {
+export default function ItemsTable({sendHandleMountToParent}) {
   const [fetchedItems, setFetchedItems] = useState([]);
-  const [itemsCount, setItemsCount] = useState();
-  const [updateTable, setUpdateTable] = useState(false);
+  /*   const [itemsCount, setItemsCount] = useState(); */
+  const [mount, setMount] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const {userInfo} = useSelector((state) => state.auth);
 
-  console.log(userInfo.role);
-
   // Callback function to handle updates
-  const handleUpdate = () => {
-    setUpdateTable(!updateTable);
+  const handleMount = () => {
+    setMount(!mount);
+    sendHandleMountToParent();
   };
 
   useEffect(() => {
     fetchItems();
-    getItemsCount();
-  }, [updateTable]);
+    /*  getItemsCount(); */
+  }, [mount]);
 
   const fetchItems = async () => {
     await axios
@@ -37,40 +39,47 @@ export default function ItemsTable() {
       });
   };
 
-  const getItemsCount = async () => {
-    await axios
-      .get("/api/items/itemsCount")
-      .then((res) => {
-        console.log(res.data);
-        setItemsCount(res.data);
-      })
-      .catch((err) => {
-        toast.error(err);
-      });
-  };
-
   const handleDelete = async (itemID) => {
     const shouldClose = window.confirm("Proceed to delete this item?");
     if (shouldClose) {
       await axios
         .delete(`api/items/data/${itemID}`)
         .then((res) => {
-          console.log(res);
-          handleUpdate();
-          toast.success("Deleted successfully");
+          handleMount();
+          toast.success("Deleted successfully" + res.data);
         })
         .catch((err) => {
-          toast.success(err);
+          toast.error(err);
         });
     }
   };
+
+  const handleCheckboxChange = (itemId) => {
+    if (selectedItems.includes(itemId)) {
+      setSelectedItems(selectedItems.filter((id) => id !== itemId));
+    } else {
+      setSelectedItems([...selectedItems, itemId]);
+    }
+  };
+
+  // You can use selectedItems.length to check how many checkboxes are selected
+  const isButtonVisible = selectedItems.length > 1;
+
+  console.log(selectedItems);
 
   return (
     <>
       <Row>
         <Col className='justify-content-center mt-5'>
+          {isButtonVisible && (
+            <ButtonMultipleDelete
+              selectedIDProp={selectedItems}
+              mountProps={handleMount}
+            />
+          )}
+
           {userInfo && userInfo.role === "inventory" && (
-            <AddItemModal setUpdateTable={handleUpdate} />
+            <AddItemModal mountProps={handleMount} />
           )}
 
           {userInfo.role === "view" && <ButtonJsonToExcel />}
@@ -78,15 +87,13 @@ export default function ItemsTable() {
           {userInfo.role === "admin" && (
             <>
               <ButtonJsonToExcel />
-              <AddItemModal setUpdateTable={handleUpdate} />
+              <AddItemModal mountProps={handleMount} />
             </>
           )}
 
           {userInfo.role === "none" && "No Access"}
 
-          <p>
-            <b>Item Count :</b> {itemsCount ? itemsCount : "No Records found"}
-          </p>
+          <CountItems mountProps={handleMount} />
 
           <section style={{height: 400, overflow: "auto"}}>
             <Table striped bordered hover>
@@ -109,13 +116,10 @@ export default function ItemsTable() {
                     {fetchedItems.map((item, index) => (
                       <tr key={item._id}>
                         <td>
-                          <Form>
-                            <div key={`default`} className='mb-3'>
-                              <Form.Check // prettier-ignore
-                                id={`default`}
-                              />
-                            </div>
-                          </Form>
+                          <Form.Check
+                            onChange={() => handleCheckboxChange(item._id)}
+                            checked={selectedItems.includes(item._id)}
+                          />
                         </td>
                         <td>{index + 1}</td>
                         <td>{item.itemName}</td>
@@ -135,7 +139,7 @@ export default function ItemsTable() {
                             <>
                               <UpdateItemModal
                                 items={item}
-                                setUpdateTable={handleUpdate}
+                                mountProps={handleMount}
                               />
                               <Button
                                 onClick={() => handleDelete(item._id)}

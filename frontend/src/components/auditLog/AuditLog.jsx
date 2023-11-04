@@ -1,14 +1,14 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {Badge} from "react-bootstrap";
+import {toast} from "react-toastify";
 
-const AuditLog = () => {
+const AuditLog = ({handleMountFromParent}) => {
   const [logs, setLogs] = useState([]);
   const [update, setUpdate] = useState(false);
-  const [click, setClick] = useState(false);
+
   useEffect(() => {
     getAuditLogs();
-  }, [update]);
+  }, [handleMountFromParent]);
 
   const handleUpdate = () => {
     setUpdate(!update);
@@ -23,12 +23,8 @@ const AuditLog = () => {
       setLogs(auditLogs);
       handleUpdate();
     } catch (err) {
-      console.log(err);
+      toast.error(err);
     }
-  };
-
-  const handleClick = () => {
-    setClick(true);
   };
 
   return (
@@ -48,7 +44,7 @@ const AuditLog = () => {
                 {log.action === "Quantity adjustment" ? (
                   <>
                     {
-                      <p onClick={handleClick}>
+                      <p>
                         Modification by <b>{log.user}</b>:{" "}
                         <b className='text-success'>{log.action}</b> for
                         existing Item{" "}
@@ -56,35 +52,32 @@ const AuditLog = () => {
                           {log._id} {log.item}
                         </i>{" "}
                         <b>{new Date(log.createdAt).toLocaleString()}</b>{" "}
-                        {click ? click : <Badge bg='secondary'>New</Badge>}
                       </p>
                     }
                   </>
                 ) : log.action === "Appended new Item" ? (
                   <>
                     {
-                      <p onClick={handleClick}>
+                      <p>
                         <b>{log.user}</b>:{" "}
                         <b className='text-primary'>{log.action}</b>{" "}
                         <i>
                           {log._id} {log.item}
                         </i>{" "}
                         <b>{new Date(log.createdAt).toLocaleString()}</b>
-                        {click ? null : <Badge bg='secondary'>New</Badge>}
                       </p>
                     }
                   </>
                 ) : log.action === "Deleted Item" ? (
                   <>
                     {
-                      <p onClick={handleClick}>
+                      <p>
                         <b>{log.user}</b>:{" "}
                         <b className='text-danger'>{log.action}</b>{" "}
                         <i>
                           {log._id} {log.item}
                         </i>{" "}
                         <b>{new Date(log.createdAt).toLocaleString()}</b>
-                        {click ? null : <Badge bg='secondary'>New</Badge>}
                       </p>
                     }
                   </>
@@ -93,7 +86,7 @@ const AuditLog = () => {
                     {
                       <p>
                         <b>{log.user}</b>:{" "}
-                        <b className='text-primary'>{log.action}</b>{" "}
+                        <b className='text-success'>{log.action}</b>{" "}
                         <i>
                           {log._id} {log.item}
                         </i>{" "}

@@ -7,6 +7,7 @@ import {
   getItemsCount,
   getItemThenUpdate,
   deleteItem,
+  deleteMultipleData,
   exportItemsToExcel,
   getAuditlogs,
 } from "../controllers/itemControllers.js";
@@ -20,6 +21,8 @@ router
   .route("/data/:id")
   .put(protect, getItemThenUpdate)
   .delete(protect, deleteItem);
+
+router.delete("/deleteMultipleData", deleteMultipleData);
 
 router.get("/exportItemsToExcel", protect, exportItemsToExcel);
 router.get("/audit", protect, getAuditlogs);
