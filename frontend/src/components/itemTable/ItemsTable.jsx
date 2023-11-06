@@ -54,11 +54,13 @@ export default function ItemsTable({sendHandleMountToParent}) {
     }
   };
 
-  const handleCheckboxChange = (itemId) => {
-    if (selectedItems.includes(itemId)) {
-      setSelectedItems(selectedItems.filter((id) => id !== itemId));
+  const handleCheckboxChange = (itemId, itemName) => {
+    if (selectedItems.some((item) => item.id === itemId)) {
+      // If the item with the same ID is already in the selectedItems array, remove it
+      setSelectedItems(selectedItems.filter((item) => item.id !== itemId));
     } else {
-      setSelectedItems([...selectedItems, itemId]);
+      // Add the selected item's ID and name to the selectedItems array
+      setSelectedItems([...selectedItems, {id: itemId, name: itemName}]);
     }
   };
 
@@ -117,10 +119,15 @@ export default function ItemsTable({sendHandleMountToParent}) {
                       <tr key={item._id}>
                         <td>
                           <Form.Check
-                            onChange={() => handleCheckboxChange(item._id)}
-                            checked={selectedItems.includes(item._id)}
+                            onChange={() =>
+                              handleCheckboxChange(item._id, item.itemName)
+                            }
+                            checked={selectedItems.some(
+                              (selectedItem) => selectedItem.id === item._id,
+                            )}
                           />
                         </td>
+
                         <td>{index + 1}</td>
                         <td>{item.itemName}</td>
                         <td>{item.itemDescription}</td>

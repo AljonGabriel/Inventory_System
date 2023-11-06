@@ -203,25 +203,29 @@ const deleteItem = asyncHandler(async (req, res) => {
 // route GET /api/items/deleteMultipleData
 // @access Private
 const deleteMultipleData = asyncHandler(async (req, res) => {
-  const {itemIds} = req.body;
-  // Use the list of item IDs to delete items
-  const deleted = await Item.deleteMany({_id: {$in: itemIds}});
+  const {itemsData} = req.body;
 
+  // Use map to extract the 'id' values into an array
+  const itemIdsArray = itemsData.map((item) => item.id);
+  const itemNamesArray = itemsData.map((item) => item.name);
+
+  // Use the list of item IDs to delete items
+  const deleted = await Item.deleteMany({_id: {$in: itemIdsArray}});
   console.log(deleted);
 
   if (deleted) {
-    /*    const newLogEntry = new AuditLogs({
-      action: "Deleted Item",
-      itemID: deleted._id,
-      item: deleted.itemName,
-      itemDes: deleted.itemDescription,
-      category: deleted.category,
+    const newLogEntry = new AuditLogs({
+      action: "Mass delete",
+      itemID: itemIdsArray.value,
+      item: itemNamesArray.value,
+      itemDes: "",
+      category: "",
       userID: req.user._id,
       user: req.user.fname + " " + req.user.lname,
       timestamp: new Date(),
     });
 
-    await newLogEntry.save(); */
+    await newLogEntry.save();
 
     res.status(200).json(deleted);
   } else {
