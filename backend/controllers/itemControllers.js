@@ -50,6 +50,7 @@ const addItem = asyncHandler(async (req, res) => {
     const newLogEntry = new AuditLogs({
       action: "Quantity adjustment",
       itemID: existingItem._id,
+      quantity: stocks,
       item: existingItem.itemName,
       itemDes: existingItem.itemDescription,
       category: existingItem.category,
@@ -203,30 +204,33 @@ const deleteItem = asyncHandler(async (req, res) => {
 // route GET /api/items/deleteMultipleData
 // @access Private
 const deleteMultipleData = asyncHandler(async (req, res) => {
-  const {itemsData} = req.body;
+  const {itemsData, user} = req.body;
 
-  // Use map to extract the 'id' values into an array
-  const itemIdsArray = itemsData.map((item) => item.id);
+  const itemIDsArray = itemsData.map((item) => item.id);
   const itemNamesArray = itemsData.map((item) => item.name);
 
+  const itemID = itemIDsArray.join(",");
+  const itemName = itemNamesArray.join(",");
+
+  console.log(itemIDsArray.length);
+
+  const newLogEntry = new AuditLogs({
+    action: "Deleted multiple items",
+    itemID: itemID,
+    item: itemName,
+    itemDes: "",
+    category: "",
+    userID: user._id,
+    user: user.fname + " " + user.lname,
+    timestamp: new Date(),
+  });
+
+  await newLogEntry.save();
+
   // Use the list of item IDs to delete items
-  const deleted = await Item.deleteMany({_id: {$in: itemIdsArray}});
-  console.log(deleted);
+  const deleted = await Item.deleteMany({_id: {$in: itemIDsArray}});
 
   if (deleted) {
-    const newLogEntry = new AuditLogs({
-      action: "Mass delete",
-      itemID: itemIdsArray.value,
-      item: itemNamesArray.value,
-      itemDes: "",
-      category: "",
-      userID: req.user._id,
-      user: req.user.fname + " " + req.user.lname,
-      timestamp: new Date(),
-    });
-
-    await newLogEntry.save();
-
     res.status(200).json(deleted);
   } else {
     res.status(400);

@@ -1,17 +1,33 @@
 import {Button} from "react-bootstrap";
 import axios from "axios";
+import {useSelector} from "react-redux";
 
-const ButtonMultipleDelete = ({selectedIDProp, mountProps}) => {
+const ButtonMultipleDelete = ({
+  selectedItems,
+  setSelectedItems,
+  mountProps,
+}) => {
+  const {userInfo} = useSelector((state) => state.auth);
+
   const handleDeleteSelected = async () => {
-    // Send a request to the backend to delete selected items.
-    await axios
-      .delete("/api/items/deleteMultipleData", {
-        data: {itemIds: selectedIDProp},
-      })
-      .then((res) => {
-        console.log(res);
-        mountProps();
-      });
+    const shouldClose = window.confirm(
+      `Proceed to delete selected items: ${selectedItems.map(
+        (items) => items.name,
+      )}`,
+    );
+
+    if (shouldClose) {
+      // Send a request to the backend to delete selected items.
+      await axios
+        .delete("/api/items/deleteMultipleData", {
+          data: {itemsData: selectedItems, user: userInfo},
+        })
+        .then((res) => {
+          console.log(res);
+          setSelectedItems([]);
+          mountProps();
+        });
+    }
   };
   return (
     <>

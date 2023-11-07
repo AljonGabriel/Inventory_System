@@ -39,8 +39,6 @@ function Login() {
     }
   }, [navigate, userInfo]);
 
-  console.log({inputData});
-
   const submitHandler = async (e) => {
     e.preventDefault();
 

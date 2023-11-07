@@ -14,6 +14,10 @@ const auditLogsSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    quantity: {
+      type: Number,
+      require: true,
+    },
     item: {
       type: String,
       require: true,

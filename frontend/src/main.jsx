@@ -19,6 +19,7 @@ import "bootstrap/dist/js/bootstrap.bundle.js";
 import Login from "./pages/login/Login.jsx";
 import Register from "./pages/register/Register.jsx";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
+import PrivateRoute from "./components/privateRoute/PrivateRoute";
 
 //css
 import "./style/general.css";
@@ -28,7 +29,9 @@ const router = createBrowserRouter(
     <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<Login />} />
       <Route path='/register' element={<Register />} />
-      <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='' element={<PrivateRoute />}>
+        <Route path='/dashboard' element={<Dashboard />} />
+      </Route>
     </Route>,
   ),
 );

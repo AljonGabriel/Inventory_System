@@ -5,6 +5,8 @@ const CountItems = ({mountProps}) => {
   const [itemsCount, setItemsCount] = useState(0);
 
   useEffect(() => {
+    console.log("mountProps value:", mountProps); // Log the value
+
     getItemsCount();
   }, [mountProps]);
 
@@ -23,7 +25,11 @@ const CountItems = ({mountProps}) => {
     <>
       <p>
         No. of Items:{" "}
-        {itemsCount && itemsCount ? itemsCount : "No record found"}
+        {itemsCount && itemsCount
+          ? itemsCount
+          : itemsCount <= 0
+          ? "0"
+          : "No record found"}
       </p>
     </>
   );

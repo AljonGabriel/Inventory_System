@@ -73,12 +73,13 @@ export default function ItemsTable({sendHandleMountToParent}) {
     <>
       <Row>
         <Col className='justify-content-center mt-5'>
-          {isButtonVisible && (
+          {isButtonVisible ? (
             <ButtonMultipleDelete
-              selectedIDProp={selectedItems}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
               mountProps={handleMount}
             />
-          )}
+          ) : isButtonVisible <= 0 ? null : null}
 
           {userInfo && userInfo.role === "inventory" && (
             <AddItemModal mountProps={handleMount} />
@@ -103,6 +104,7 @@ export default function ItemsTable({sendHandleMountToParent}) {
                 <tr>
                   <th>✔️</th>
                   <th>#</th>
+                  <th>ID</th>
                   <th>Item name</th>
                   <th>Item description</th>
                   <th>Category</th>
@@ -129,6 +131,7 @@ export default function ItemsTable({sendHandleMountToParent}) {
                         </td>
 
                         <td>{index + 1}</td>
+                        <td>{item._id}</td>
                         <td>{item.itemName}</td>
                         <td>{item.itemDescription}</td>
                         <td>{item.category}</td>

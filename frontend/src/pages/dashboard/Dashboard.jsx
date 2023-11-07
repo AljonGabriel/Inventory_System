@@ -1,4 +1,5 @@
 import AuditLog from "../../components/auditLog/AuditLog";
+import ItemChart from "../../components/chart/ItemChart";
 import ItemsTable from "../../components/itemTable/ItemsTable";
 import {useState} from "react";
 function Dashboard() {
@@ -10,6 +11,7 @@ function Dashboard() {
   return (
     <>
       <AuditLog handleMountFromParent={handleMount} />
+      <ItemChart />
       <ItemsTable sendHandleMountToParent={handleMount} />
     </>
   );
