@@ -85,7 +85,7 @@ const AuditLog = ({handleMountFromParent}) => {
                   <>
                     <p>
                       <b>{log.user}</b>:{" "}
-                      <b className='text-danger'>{log.action}</b>{" "}
+                      <b className='text-danger'>{log.action}</b> at{" "}
                       <b>{new Date(log.createdAt).toLocaleString()}</b>
                       <ul>
                         {log.itemID.split(",").map((item, index) => (
