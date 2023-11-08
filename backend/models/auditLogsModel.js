@@ -6,10 +6,6 @@ const auditLogsSchema = mongoose.Schema(
       type: String,
       require: true,
     },
-    logDes: {
-      type: String,
-      require: true,
-    },
     itemID: {
       type: String,
       require: true,
