@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    base: /Inventory_System/,
+    base: "/Inventory_System/", // Change this line
     port: 3000,
     proxy: {
       "/api": {

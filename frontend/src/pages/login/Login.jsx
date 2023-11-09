@@ -35,7 +35,7 @@ function Login() {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/dashboard");
+      navigate("/Inventory_System/dashboard");
     }
   }, [navigate, userInfo]);
 
@@ -46,7 +46,7 @@ function Login() {
       const res = await login(inputData).unwrap();
 
       dispatch(setCredentials({...res}));
-      navigate("/dashboard");
+      navigate("/Inventory_System/dashboard");
       toast.success("Logged-in Success");
     } catch (err) {
       toast.error(err?.data?.message) || err.error;
@@ -101,7 +101,8 @@ function Login() {
 
               <Stack direction='horizontal'>
                 <small>
-                  Request an account? <Link to='/register'>Request</Link>
+                  Request an account?{" "}
+                  <Link to='/Inventory_System/register'>Request</Link>
                 </small>
                 {isLoading ? (
                   <Button

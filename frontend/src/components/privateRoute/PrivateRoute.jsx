@@ -7,7 +7,7 @@ const PrivateRoute = () => {
 
   if (!userInfo) {
     toast.error("Please log-in");
-    return <Navigate to='/' replace />;
+    return <Navigate to='/' />;
   }
 
   return <Outlet />;

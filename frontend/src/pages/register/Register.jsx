@@ -33,7 +33,7 @@ function Login() {
     e.preventDefault();
     try {
       await register(inputData).unwrap();
-      navigate("/");
+      navigate("/Inventory_System/");
       toast.success("Wait for your supervisor to approve your account");
     } catch (err) {
       const errors = err.data;
@@ -207,7 +207,8 @@ function Login() {
 
           <Stack direction='horizontal'>
             <small>
-              Already have an account? <Link to='/'>Log-in</Link>
+              Already have an account?{" "}
+              <Link to='/Inventory_System/'>Log-in</Link>
             </small>
             {isLoading ? (
               <Button variant='primary' className='ms-auto d-md-block' disabled>

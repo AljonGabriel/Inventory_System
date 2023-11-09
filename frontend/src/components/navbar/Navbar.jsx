@@ -21,7 +21,7 @@ function BasicExample() {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      navigate("/");
+      navigate("/Inventory_System/");
       toast.success("Logout successfully");
     } catch (err) {
       toast.error(err?.data?.message) || err.error;
