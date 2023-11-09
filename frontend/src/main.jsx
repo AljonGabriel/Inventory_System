@@ -26,7 +26,7 @@ import "./style/general.css";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route basename='/Inventory_System/' path='/' element={<App />}>
+    <Route path='/' element={<App />}>
       <Route index={true} path='/' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='' element={<PrivateRoute />}>
