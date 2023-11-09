@@ -42,7 +42,9 @@ Our secure login system ensures that each user undergoes an approval process by
 the Admin before gaining access. This adds an extra layer of security to your
 inventory management.
 
-![App Screenshot](screenshots/index.jpg)
+Log-in: ![App Screenshot](screenshots/index.jpg)
+
+Request: ![App Screenshot](screenshots/request.jpg)
 
 # Private and Protected Routes
 
