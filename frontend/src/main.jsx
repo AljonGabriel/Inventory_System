@@ -27,15 +27,13 @@ import "./style/general.css";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Routes basename='/Inventory_System/'>
-      <Route path='/' element={<App />}>
-        <Route index={true} path='/' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='' element={<PrivateRoute />}>
-          <Route path='/dashboard' element={<Dashboard />} />
-        </Route>
+    <Route basename='/Inventory_System/' path='/' element={<App />}>
+      <Route index={true} path='/' element={<Login />} />
+      <Route path='/register' element={<Register />} />
+      <Route path='' element={<PrivateRoute />}>
+        <Route path='/dashboard' element={<Dashboard />} />
       </Route>
-    </Routes>,
+    </Route>,
   ),
 );
 

@@ -7,7 +7,7 @@ const PrivateRoute = () => {
 
   if (!userInfo) {
     toast.error("Please log-in");
-    return <Navigate to='/' />;
+    return <Navigate to='/Inventory_System/' replace />;
   }
 
   return <Outlet />;
