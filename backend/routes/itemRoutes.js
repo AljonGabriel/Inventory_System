@@ -10,6 +10,7 @@ import {
   deleteMultipleData,
   exportItemsToExcel,
   getAuditlogs,
+  getItemsChartData,
 } from "../controllers/itemControllers.js";
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.delete("/deleteMultipleData", deleteMultipleData);
 
 router.get("/exportItemsToExcel", protect, exportItemsToExcel);
 router.get("/audit", protect, getAuditlogs);
+router.get("/audit/chart/", getItemsChartData);
 
 export default router;

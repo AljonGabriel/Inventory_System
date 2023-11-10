@@ -207,8 +207,7 @@ function Login() {
 
           <Stack direction='horizontal'>
             <small>
-              Already have an account?{" "}
-              <Link to='/Inventory_System/'>Log-in</Link>
+              Already have an account? <Link to='/'>Log-in</Link>
             </small>
             {isLoading ? (
               <Button variant='primary' className='ms-auto d-md-block' disabled>

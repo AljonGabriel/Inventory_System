@@ -10,6 +10,7 @@ import cors from "cors";
 
 import userRoutes from "./routes/userRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
+import itemsAuditLogs from "./routes/itemsAuditLogsRoutes.js";
 
 const port = process.env.PORT || 8000;
 connectDB();
@@ -31,6 +32,7 @@ app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
 app.use("/api/items", itemRoutes);
+app.use("/api/itemLogs", itemsAuditLogs);
 
 app.get("/", (req, res) => res.send("Server is ready"));
 

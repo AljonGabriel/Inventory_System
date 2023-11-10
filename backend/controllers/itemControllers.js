@@ -1,8 +1,11 @@
 import asyncHandler from "express-async-handler";
 import Item from "../models/itemModel.js";
+import {incrementItemsCount} from "../utils/itemsChartHandler.js";
 import AuditLogs from "../models/auditLogsModel.js";
+import ItemsChart from "../models/itemsChartModel.js";
 import ExcelJS from "exceljs";
 import fs from "fs";
+import {log} from "console";
 
 // @desc Add item
 // route GET /api/items/
@@ -44,8 +47,7 @@ const addItem = asyncHandler(async (req, res) => {
 
   if (existingItem) {
     // If it exists, update the quantity by adding the new stocks
-    existingItem.quantity = existingItem.quantity + stocksNumber;
-    // Check if the addedBy is different from the existing addedBy
+    existingItem.quantity += stocksNumber;
 
     const newLogEntry = new AuditLogs({
       action: "Quantity adjustment",
@@ -59,7 +61,12 @@ const addItem = asyncHandler(async (req, res) => {
       timestamp: new Date(),
     });
 
-    await newLogEntry.save();
+    const savedLog = await newLogEntry.save();
+
+    if (savedLog) {
+      let action = "update";
+      incrementItemsCount(action);
+    }
 
     if (
       existingItem.addedBy !== addedBy &&
@@ -85,20 +92,25 @@ const addItem = asyncHandler(async (req, res) => {
       addedBy: addedBy,
     });
 
-    const newLogEntry = new AuditLogs({
-      action: "Appended new Item",
-      itemID: item._id,
-      item: item.itemName,
-      itemDes: item.itemDescription,
-      category: item.category,
-      userID: req.user._id,
-      user: req.user.fname + " " + req.user.lname,
-      timestamp: new Date(),
-    });
-
-    await newLogEntry.save();
-
     if (item) {
+      const newLogEntry = new AuditLogs({
+        action: "Appended new Item",
+        itemID: item._id,
+        item: item.itemName,
+        itemDes: item.itemDescription,
+        category: item.category,
+        userID: req.user._id,
+        user: req.user.fname + " " + req.user.lname,
+        timestamp: new Date(),
+      });
+
+      const logSaved = await newLogEntry.save();
+
+      if (logSaved) {
+        let action = "add";
+        incrementItemsCount(action);
+      }
+
       res.status(201).json({
         _id: item._id,
         itemName: item.itemName,
@@ -196,6 +208,10 @@ const deleteItem = asyncHandler(async (req, res) => {
     });
 
     await newLogEntry.save();
+
+    let action = "delete";
+    incrementItemsCount(action);
+
     res.status(200).json({deleted: deleted});
   }
 });
@@ -231,6 +247,9 @@ const deleteMultipleData = asyncHandler(async (req, res) => {
   const deleted = await Item.deleteMany({_id: {$in: itemIDsArray}});
 
   if (deleted) {
+    let action = "delete";
+    incrementItemsCount(action);
+
     res.status(200).json(deleted);
   } else {
     res.status(400);
@@ -297,11 +316,28 @@ const exportItemsToExcel = asyncHandler(async (req, res) => {
   fileStream.pipe(res);
 });
 
+// Get Auditlogs Data
+// route GET /api/audit/
+// @access Private
 const getAuditlogs = asyncHandler(async (req, res) => {
   const logs = await AuditLogs.find().sort({timestamp: 1});
 
   if (logs) {
     res.status(200).json(logs);
+  }
+});
+
+// Get Auditlogs Data
+// route GET /api/audit/chart/
+// @access Private
+const getItemsChartData = asyncHandler(async (req, res) => {
+  const data = await ItemsChart.find().sort({number: 1});
+
+  if (data) {
+    res.status(200).json(data);
+  } else {
+    res.status(404);
+    throw new Error("No Items chart found");
   }
 });
 
@@ -314,4 +350,5 @@ export {
   deleteMultipleData,
   exportItemsToExcel,
   getAuditlogs,
+  getItemsChartData,
 };
