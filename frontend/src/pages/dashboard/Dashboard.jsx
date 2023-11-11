@@ -11,7 +11,7 @@ function Dashboard() {
   return (
     <>
       <AuditLog handleMountFromParent={handleMount} />
-      <ItemChart handleMountFromParent={handleMount} />
+      {/* <ItemChart handleMountFromParent={handleMount} /> */}
       <ItemsTable sendHandleMountToParent={handleMount} />
     </>
   );

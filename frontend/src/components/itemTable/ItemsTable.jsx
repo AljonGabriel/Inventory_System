@@ -8,6 +8,7 @@ import {useSelector} from "react-redux";
 import ButtonJsonToExcel from "../btnJSONToExcel/ButtonJsonToExcel";
 import ButtonMultipleDelete from "../buttonMultipleDelete/ButtonMultipleDelete";
 import CountItems from "../../context/countItems/CountItems";
+import ButtonDelete from "../buttonDelete/ButtonDelete";
 
 export default function ItemsTable({sendHandleMountToParent}) {
   const [fetchedItems, setFetchedItems] = useState([]);
@@ -39,21 +40,6 @@ export default function ItemsTable({sendHandleMountToParent}) {
       });
   };
 
-  const handleDelete = async (itemID) => {
-    const shouldClose = window.confirm("Proceed to delete this item?");
-    if (shouldClose) {
-      await axios
-        .delete(`api/items/data/${itemID}`)
-        .then((res) => {
-          handleMount();
-          toast.success("Deleted successfully" + res.data);
-        })
-        .catch((err) => {
-          toast.error(err);
-        });
-    }
-  };
-
   const handleCheckboxChange = (itemId, itemName) => {
     if (selectedItems.some((item) => item.id === itemId)) {
       // If the item with the same ID is already in the selectedItems array, remove it
@@ -72,7 +58,7 @@ export default function ItemsTable({sendHandleMountToParent}) {
   return (
     <>
       <Row>
-        <Col className='justify-content-center mt-5'>
+        <Col className='justify-content-center my-1'>
           {isButtonVisible ? (
             <ButtonMultipleDelete
               selectedItems={selectedItems}
@@ -139,9 +125,7 @@ export default function ItemsTable({sendHandleMountToParent}) {
                         <td>
                           <b>{item.addedBy}</b>
                         </td>
-                        <td>
-                          <p>{new Date(item.createdAt).toLocaleString()}</p>
-                        </td>
+                        <td>{new Date(item.createdAt).toLocaleString()}</td>
 
                         <td>
                           {(userInfo && userInfo.role === "inventory") ||
@@ -151,15 +135,14 @@ export default function ItemsTable({sendHandleMountToParent}) {
                                 items={item}
                                 mountProps={handleMount}
                               />
-                              <Button
-                                onClick={() => handleDelete(item._id)}
-                                variant='outline-danger'
-                              >
-                                Delete
-                              </Button>
+                              <ButtonDelete
+                                id={item._id}
+                                mountProps={handleMount}
+                                action={"items"}
+                              />
                             </>
                           ) : (
-                            <p className='text-danger'>No Access</p>
+                            <small className='text-danger'>No Access</small>
                           )}
                         </td>
                       </tr>
@@ -168,7 +151,7 @@ export default function ItemsTable({sendHandleMountToParent}) {
                 ) : (
                   <tr>
                     <td>
-                      <p className='text-center'>No records found</p>
+                      <small className='text-center'>No records found</small>
                     </td>
                   </tr>
                 )}

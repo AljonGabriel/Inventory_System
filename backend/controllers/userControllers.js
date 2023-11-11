@@ -158,4 +158,29 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export {authUser, registerUser, logoutUser, getUserProfile, updateUserProfile};
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}).sort({approve: 1});
+
+  if (users) {
+    res.status(200).json(users);
+  }
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+  const {id} = req.params; // Get the item ID from the URL
+  const deleted = await User.findByIdAndDelete(id);
+
+  if (deleted) {
+    res.status(200).json(deleted);
+  }
+});
+
+export {
+  authUser,
+  registerUser,
+  logoutUser,
+  getUserProfile,
+  updateUserProfile,
+  getAllUsers,
+  deleteUser,
+};

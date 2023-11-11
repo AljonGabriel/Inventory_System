@@ -180,7 +180,12 @@ const getItemThenUpdate = asyncHandler(async (req, res) => {
       timestamp: new Date(),
     });
 
-    await newLogEntry.save();
+    if (newLogEntry) {
+      await newLogEntry.save();
+      const action = "update";
+      incrementItemsCount(action);
+    }
+
     res.status(200).json(updatedItem);
   } else {
     res.status(404);
@@ -341,6 +346,13 @@ const getItemsChartData = asyncHandler(async (req, res) => {
   }
 });
 
+const categoryCounts = asyncHandler(async (req, res) => {
+  const categoryCounts = await Item.aggregate([
+    {$group: {_id: "$category", count: {$sum: 1}}},
+  ]);
+  res.json(categoryCounts);
+});
+
 export {
   addItem,
   getItemData,
@@ -351,4 +363,5 @@ export {
   exportItemsToExcel,
   getAuditlogs,
   getItemsChartData,
+  categoryCounts,
 };

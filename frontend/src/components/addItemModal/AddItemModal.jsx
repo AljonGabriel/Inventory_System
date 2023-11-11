@@ -32,7 +32,7 @@ export default function AddItemModal({mountProps}) {
       toast.success("Added Successfully");
       handleClose();
     } catch (err) {
-      const errors = err.response.data;
+      const errors = err?.response?.data;
       for (const field in errors) {
         toast.error(errors[field]);
         setErrors(errors);

@@ -19,6 +19,7 @@ import "bootstrap/dist/js/bootstrap.bundle.js";
 import Login from "./pages/login/Login.jsx";
 import Register from "./pages/register/Register.jsx";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
+import Admin from "./pages/admin/admin.jsx";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 
 //css
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
       <Route path='/register' element={<Register />} />
       <Route path='' element={<PrivateRoute />}>
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/admin' element={<Admin />} />
       </Route>
     </Route>,
   ),

@@ -1,10 +1,14 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {toast} from "react-toastify";
+import ButtonDeleteAllItemLogs from "../buttonDeleteAllItemLogs/ButtonDeleteAllItemLogs";
+import {useSelector} from "react-redux";
 
 const AuditLog = ({handleMountFromParent}) => {
   const [logs, setLogs] = useState([]);
   const [update, setUpdate] = useState(false);
+
+  const {userInfo} = useSelector((state) => state.auth);
 
   useEffect(() => {
     getAuditLogs();
@@ -35,6 +39,7 @@ const AuditLog = ({handleMountFromParent}) => {
         <small className='text-success'>Update</small>
         <small className='text-primary'> Add</small>
         <small className='text-danger'>Delete</small>
+        {userInfo.role === "admin" && <ButtonDeleteAllItemLogs />}
       </header>
       <section style={{height: 200, overflow: "auto"}}>
         {logs.length > 0 ? (
@@ -42,67 +47,65 @@ const AuditLog = ({handleMountFromParent}) => {
             {logs.map((log) => (
               <li key={log._id}>
                 {log.action === "Quantity adjustment" ? (
-                  <>
-                    {
-                      <p>
-                        Modification by <b>{log.user}</b>:{" "}
-                        <b className='text-success'>{log.action}</b> for
-                        existing Item of <b> {log.quantity} </b>{" "}
-                        <i>
-                          {log.itemID} {log.item}
-                        </i>{" "}
-                        <b>{new Date(log.createdAt).toLocaleString()}</b>{" "}
-                      </p>
-                    }
-                  </>
+                  <p>
+                    Modification by <b>{log.user}</b>:{" "}
+                    <b className='text-success'>{log.action}</b> for existing
+                    Item of <b> {log.quantity} </b>{" "}
+                    <i>
+                      {log.itemID} {log.item}
+                    </i>{" "}
+                    <b>{new Date(log.createdAt).toLocaleString()}</b>{" "}
+                  </p>
                 ) : log.action === "Appended new Item" ? (
-                  <>
-                    {
-                      <p>
-                        <b>{log.user}</b>:{" "}
-                        <b className='text-primary'>{log.action}</b>{" "}
-                        <i>
-                          {log.itemID} {log.item}
-                        </i>{" "}
-                        <b>{new Date(log.createdAt).toLocaleString()}</b>
-                      </p>
-                    }
-                  </>
+                  <p>
+                    <b>{log.user}</b>:{" "}
+                    <b className='text-primary'>{log.action}</b>{" "}
+                    <i>
+                      {log.itemID} {log.item}
+                    </i>{" "}
+                    <b>{new Date(log.createdAt).toLocaleString()}</b>
+                  </p>
                 ) : log.action === "Deleted Item" ? (
-                  <>
-                    {
-                      <p>
-                        <b>{log.user}</b>:{" "}
-                        <b className='text-danger'>{log.action}</b>{" "}
-                        <i>
-                          {log.itemID} {log.item}
-                        </i>{" "}
-                        <b>{new Date(log.createdAt).toLocaleString()}</b>
-                      </p>
-                    }
-                  </>
+                  <p>
+                    <b>{log.user}</b>:{" "}
+                    <b className='text-danger'>{log.action}</b>{" "}
+                    <i>
+                      {log.itemID} {log.item}
+                    </i>{" "}
+                    <b>{new Date(log.createdAt).toLocaleString()}</b>
+                  </p>
                 ) : log.action === "Deleted multiple items" ? (
                   <>
                     <p>
                       <b>{log.user}</b>:{" "}
                       <b className='text-danger'>{log.action}</b> at{" "}
                       <b>{new Date(log.createdAt).toLocaleString()}</b>
-                      <ul>
-                        {log.itemID.split(",").map((item, index) => (
-                          <li key={index}>
-                            <b>ID : </b> {log.itemID.split(",")[index]}
-                            <ul>
-                              <li>
-                                <b>Item name : {log.item.split(",")[index]}</b>
-                              </li>
-                            </ul>
-                          </li>
-                        ))}
-                      </ul>
                     </p>
+                    <ul>
+                      {log.itemID.split(",").map((item, index) => (
+                        <li key={index}>
+                          <b>ID : </b> {log.itemID.split(",")[index]}
+                          <ul>
+                            <li>
+                              <b>Item name : {log.item.split(",")[index]}</b>
+                            </li>
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
                   </>
+                ) : log.action === "Updated item" ? (
+                  <p>
+                    Modification by <b>{log.user}</b>:{" "}
+                    <b className='text-success'>{log.action}</b> for existing
+                    Item of <b> {log.quantity} </b>{" "}
+                    <i>
+                      {log.itemID} {log.item}
+                    </i>{" "}
+                    <b>{new Date(log.createdAt).toLocaleString()}</b>{" "}
+                  </p>
                 ) : (
-                  "No new logs"
+                  "Undefined Logs"
                 )}
               </li>
             ))}
