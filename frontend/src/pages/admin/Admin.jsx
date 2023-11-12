@@ -5,7 +5,7 @@ const Admin = () => {
     <>
       <h3 className='my-3'>Item Chart</h3>
       <ItemChart />
-      <h3 className='my-3'>Users Table</h3>
+      <h3 className='my-3'>User Table</h3>
       <UsersTable />
     </>
   );
