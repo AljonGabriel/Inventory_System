@@ -53,7 +53,7 @@ export default function AddItemModal({mountProps}) {
         </Modal.Header>
         <Modal.Body>
           <Form id='form' onSubmit={(e) => handleSubmit(e)}>
-            <Form.Group className='mb-3' controlId='formGroupEmail'>
+            <Form.Group className='mb-3' controlId='formGroupUser'>
               <Form.Label>Added by</Form.Label>
               <Form.Control
                 type='text'
@@ -63,7 +63,7 @@ export default function AddItemModal({mountProps}) {
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formGroupEmail'>
+            <Form.Group className='mb-3' controlId='formGroupItemName'>
               <Form.Label>Item name</Form.Label>
               <Form.Control
                 type='text'
@@ -78,7 +78,7 @@ export default function AddItemModal({mountProps}) {
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formGroupEmail'>
+            <Form.Group className='mb-3' controlId='formGroupItemDesc'>
               <Form.Label>Item description</Form.Label>
               <Form.Control
                 type='text'
@@ -93,7 +93,7 @@ export default function AddItemModal({mountProps}) {
               />
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formGroupEmail'>
+            <Form.Group className='mb-3' controlId='formGroupCategory'>
               <Form.Label>Category</Form.Label>
               <Form.Select
                 aria-label='Default select example'
@@ -115,7 +115,7 @@ export default function AddItemModal({mountProps}) {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group className='mb-3' controlId='formGroupEmail'>
+            <Form.Group className='mb-3' controlId='formGroupStocks'>
               <Form.Label>Stocks</Form.Label>
               <Form.Control
                 type='number'

@@ -101,7 +101,7 @@ const UsersTable = () => {
                     <td>{users.approve ? "Yes" : "No"}</td>
                     <td>
                       <ButtonDelete id={users._id} action={"users"} /> ,{" "}
-                      <UpdateUserModal />
+                      <UpdateUserModal user={users} />
                     </td>
                   </tr>
                 ))}

@@ -33,7 +33,7 @@ function Login() {
     e.preventDefault();
     try {
       await register(inputData).unwrap();
-      navigate("/Inventory_System/");
+      navigate("/");
       toast.success("Wait for your supervisor to approve your account");
     } catch (err) {
       const errors = err.data;
