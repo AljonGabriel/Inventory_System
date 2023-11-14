@@ -18,7 +18,7 @@ const UsersTable = () => {
 
   useEffect(() => {
     getAllUsers();
-  }, []); // <-- Corrected dependency array
+  }, [mount]); // <-- Corrected dependency array
 
   const getAllUsers = async () => {
     try {
@@ -100,8 +100,13 @@ const UsersTable = () => {
                     <td>{new Date(users.createdAt).toLocaleString()}</td>
                     <td>{users.approve ? "Yes" : "No"}</td>
                     <td>
-                      <ButtonDelete id={users._id} action={"users"} /> ,{" "}
-                      <UpdateUserModal user={users} />
+                      <ButtonDelete
+                        id={users._id}
+                        action={"users"}
+                        mountProps={handleMount}
+                      />{" "}
+                      ,{" "}
+                      <UpdateUserModal user={users} mountProps={handleMount} />
                     </td>
                   </tr>
                 ))}

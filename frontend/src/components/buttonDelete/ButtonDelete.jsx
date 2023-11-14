@@ -9,7 +9,8 @@ const ButtonDelete = ({id, mountProps, action}) => {
       await axios
         .delete(`api/items/data/${id}`)
         .then((res) => {
-          toast.success("Deleted successfully" + res.data);
+          toast.success("Deleted successfully");
+          console.log(res);
           mountProps();
         })
         .catch((err) => {
@@ -26,7 +27,8 @@ const ButtonDelete = ({id, mountProps, action}) => {
       await axios
         .delete(`api/users/delete/${id}`)
         .then((res) => {
-          toast.success("Deleted successfully" + res.data);
+          toast.success("Deleted successfully");
+          console.log(res);
           mountProps();
         })
         .catch((err) => {

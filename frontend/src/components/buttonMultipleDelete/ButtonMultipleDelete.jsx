@@ -1,6 +1,7 @@
 import {Button} from "react-bootstrap";
 import axios from "axios";
 import {useSelector} from "react-redux";
+import {toast} from "react-toastify";
 
 const ButtonMultipleDelete = ({
   selectedItems,
@@ -26,6 +27,11 @@ const ButtonMultipleDelete = ({
           console.log(res);
           setSelectedItems([]);
           mountProps();
+          toast.success(
+            `Deleted items successfully ${selectedItems.map(
+              (items) => items.name,
+            )}`,
+          );
         });
     }
   };

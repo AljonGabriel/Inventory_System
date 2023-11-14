@@ -7,9 +7,9 @@ export default function UpdateModal({items, mountProps}) {
   const {_id, itemName, itemDescription, quantity} = items;
 
   const [inputData, setInputData] = useState({
-    iName: "",
-    iDescription: "",
-    stocks: "",
+    feItemName: "",
+    feItemDesc: "",
+    feQuantity: "",
   });
 
   const [show, setShow] = useState(false);
@@ -53,9 +53,9 @@ export default function UpdateModal({items, mountProps}) {
               <Form.Control
                 type='text'
                 placeholder={itemName}
-                value={inputData.iName}
+                value={inputData.feItemName}
                 onChange={(e) =>
-                  setInputData({...inputData, iName: e.target.value})
+                  setInputData({...inputData, feItemName: e.target.value})
                 }
               />
             </Form.Group>
@@ -65,9 +65,9 @@ export default function UpdateModal({items, mountProps}) {
               <Form.Control
                 type='text'
                 placeholder={itemDescription}
-                value={inputData.iDescription}
+                value={inputData.feItemDesc}
                 onChange={(e) =>
-                  setInputData({...inputData, iDescription: e.target.value})
+                  setInputData({...inputData, feItemDesc: e.target.value})
                 }
               />
             </Form.Group>
@@ -77,9 +77,9 @@ export default function UpdateModal({items, mountProps}) {
               <Form.Control
                 type='text'
                 placeholder={quantity}
-                value={inputData.stocks}
+                value={inputData.feQuantity}
                 onChange={(e) =>
-                  setInputData({...inputData, stocks: e.target.value})
+                  setInputData({...inputData, feQuantity: e.target.value})
                 }
               />
             </Form.Group>

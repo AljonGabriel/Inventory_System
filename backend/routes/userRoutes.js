@@ -20,10 +20,10 @@ router
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
 
-router.get("/getAll", getAllUsers);
+router.get("/getAll", protect, getAllUsers);
 
-router.put("/getIDandUpdate/:id", getIDandUpdate);
+router.put("/getIDandUpdate/:id", protect, getIDandUpdate);
 
-router.delete("/delete/:id", deleteUser);
+router.delete("/delete/:id", protect, deleteUser);
 
 export default router;

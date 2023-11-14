@@ -11,24 +11,24 @@ import {log} from "console";
 // route GET /api/items/
 // @access Private
 const addItem = asyncHandler(async (req, res) => {
-  const {iName, iDescription, category, stocks, addedBy} = req.body;
+  const {feItemName, feItemDesc, feCategory, feQuantity, addedBy} = req.body;
 
   let errors = {};
 
-  if (!iName) {
-    errors.iName = "Please enter the Item name";
+  if (!feItemName) {
+    errors.feItemName = "Please enter the Item name";
   }
 
-  if (!iDescription) {
-    errors.iDescription = "Description is required";
+  if (!feItemDesc) {
+    errors.feItemDesc = "Description is required";
   }
 
-  if (!category) {
-    errors.category = "Please specify the category";
+  if (!feCategory) {
+    errors.feCategory = "Please specify the feCategory";
   }
 
-  if (!stocks) {
-    errors.stocks = "Enter quantity";
+  if (!feQuantity) {
+    errors.feQuantity = "Enter quantity";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -37,12 +37,12 @@ const addItem = asyncHandler(async (req, res) => {
   }
 
   // Convert stocks to a number
-  const stocksNumber = parseInt(stocks, 10); // Assuming it's an integer
+  const stocksNumber = parseInt(feQuantity, 10); // Assuming it's an integer
 
   const existingItem = await Item.findOne({
-    itemName: iName,
-    itemDescription: iDescription,
-    category: category,
+    itemName: feItemName,
+    itemDescription: feItemDesc,
+    category: feCategory,
   });
 
   if (existingItem) {
@@ -52,10 +52,10 @@ const addItem = asyncHandler(async (req, res) => {
     const newLogEntry = new AuditLogs({
       action: "Quantity adjustment",
       itemID: existingItem._id,
-      quantity: stocks,
+      quantity: feQuantity,
       item: existingItem.itemName,
       itemDes: existingItem.itemDescription,
-      category: existingItem.category,
+      category: existingItem.feCategory,
       userID: req.user._id,
       user: req.user.fname + " " + req.user.lname,
       timestamp: new Date(),
@@ -85,10 +85,10 @@ const addItem = asyncHandler(async (req, res) => {
     });
   } else {
     const item = await Item.create({
-      itemName: iName,
-      itemDescription: iDescription,
-      category: category,
-      quantity: stocks,
+      itemName: feItemName,
+      itemDescription: feItemDesc,
+      category: feCategory,
+      quantity: feQuantity,
       addedBy: addedBy,
     });
 
@@ -147,9 +147,8 @@ const getItemsCount = asyncHandler(async (req, res) => {
 
   if (items) {
     res.status(200).json(items);
-  } else {
-    res.status(404);
-    throw new Error("No Items found");
+  } else if (items <= 0) {
+    res.status(200).json("0");
   }
 });
 
@@ -159,13 +158,21 @@ const getItemsCount = asyncHandler(async (req, res) => {
 const getItemThenUpdate = asyncHandler(async (req, res) => {
   const {id} = req.params; // Get the item ID from the URL
 
-  const {iName, iDescription, stocks} = req.body;
+  const {feItemName, feItemDesc, feCategory, feQuantity} = req.body;
+
+  const item = await Item.findById(id);
+
+  const itemName = !feItemName ? item.itemName : feItemName;
+  const itemDesc = !feItemDesc ? item.itemDescription : feItemDesc;
+  const category = !feCategory ? item.category : feCategory;
+  const quantity = !feQuantity ? item.quantity : feQuantity;
 
   // Find the item by ID and update it with the data from the request body
   const updatedItem = await Item.findByIdAndUpdate(id, {
-    itemName: iName,
-    itemDescription: iDescription,
-    quantity: stocks,
+    itemName: itemName,
+    itemDescription: itemDesc,
+    category: category,
+    quantity: quantity,
   });
 
   if (updatedItem) {

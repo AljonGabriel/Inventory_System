@@ -1,8 +1,9 @@
 import {Button, Modal, Form} from "react-bootstrap";
 import {useState} from "react";
 import axios from "axios";
+import {toast} from "react-toastify";
 
-const UpdateUserModal = ({user}) => {
+const UpdateUserModal = ({user, mountProps}) => {
   const {_id, fname, lname, email, role, approve} = user;
   const [inputData, setInputData] = useState({
     feFname: "",
@@ -15,7 +16,14 @@ const UpdateUserModal = ({user}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/users/getIDandUpdate/${_id}`, inputData);
+      await axios
+        .put(`/api/users/getIDandUpdate/${_id}`, inputData)
+        .then((res) => {
+          if (res) {
+            mountProps();
+            toast.success(`User ${_id}: Updated Successfully`);
+          }
+        });
     } catch (err) {
       console.log(err);
     }

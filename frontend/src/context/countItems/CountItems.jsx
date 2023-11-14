@@ -24,12 +24,7 @@ const CountItems = ({mountProps}) => {
   return (
     <>
       <p>
-        No. of Items:{" "}
-        {itemsCount && itemsCount
-          ? itemsCount
-          : itemsCount <= 0
-          ? "0"
-          : "No record found"}
+        No. of Items: {itemsCount ? itemsCount : itemsCount === null && "0"}
       </p>
     </>
   );

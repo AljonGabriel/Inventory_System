@@ -168,7 +168,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 const getIDandUpdate = asyncHandler(async (req, res) => {
   const {id} = req.params; // Get the item ID from the URL
-  const {feFname, feLname, feRole, feApprove} = req.body;
+  const {feFname, feLname, feEmail, feRole, feApprove} = req.body;
 
   const user = await User.findById(id);
   console.log(user.fname);
@@ -176,12 +176,14 @@ const getIDandUpdate = asyncHandler(async (req, res) => {
 
   const firstName = !feFname ? user.fname : feFname;
   const lastName = !feLname ? user.lname : feLname;
+  const email = !feEmail ? user.email : feEmail;
   const role = !feRole ? user.role : feRole;
   const approve = !feApprove ? user.approve : feApprove;
 
   const updatedUser = await User.findByIdAndUpdate(id, {
     fname: firstName,
     lname: lastName,
+    email: email,
     role: role,
     approve: approve,
   });

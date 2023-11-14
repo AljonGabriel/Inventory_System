@@ -1,6 +1,6 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {toast} from "react-toastify";
+
 import ButtonDeleteAllItemLogs from "../buttonDeleteAllItemLogs/ButtonDeleteAllItemLogs";
 import {useSelector} from "react-redux";
 
@@ -20,12 +20,17 @@ const AuditLog = ({handleMountFromParent}) => {
 
   const getAuditLogs = async () => {
     try {
-      const res = await axios.get("/api/items/audit");
-      const auditLogs = res.data;
-      // Sort the logs in descending order based on 'createdAt'
-      auditLogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setLogs(auditLogs);
-      handleUpdate();
+      await axios.get("/api/items/audit").then((res) => {
+        if (res) {
+          const auditLogs = res.data;
+          // Sort the logs in descending order based on 'createdAt'
+          auditLogs.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+          );
+          setLogs(auditLogs);
+          handleUpdate();
+        }
+      });
     } catch (err) {
       toast.error(err);
     }
@@ -39,7 +44,9 @@ const AuditLog = ({handleMountFromParent}) => {
         <small className='text-success'>Update</small>
         <small className='text-primary'> Add</small>
         <small className='text-danger'>Delete</small>
-        {userInfo.role === "admin" && <ButtonDeleteAllItemLogs />}
+        {userInfo.role === "admin" && (
+          <ButtonDeleteAllItemLogs mountProps={handleMountFromParent} />
+        )}
       </header>
       <section style={{height: 200, overflow: "auto"}}>
         {logs.length > 0 ? (

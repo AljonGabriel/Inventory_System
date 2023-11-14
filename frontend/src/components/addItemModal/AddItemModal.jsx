@@ -9,10 +9,10 @@ export default function AddItemModal({mountProps}) {
 
   const [inputData, setInputData] = useState({
     addedBy: userInfo.fname + " " + userInfo.lname,
-    iName: "",
-    iDescription: "",
-    category: "",
-    stocks: "",
+    feItemName: "",
+    feItemDesc: "",
+    feCategory: "",
+    feQuantity: "",
   });
 
   const [error, setErrors] = useState(null);
@@ -71,9 +71,9 @@ export default function AddItemModal({mountProps}) {
                 className={
                   error && error.iName ? "is-invalid" : !error ? "" : "is-valid"
                 }
-                value={inputData.iName}
+                value={inputData.feItemName}
                 onChange={(e) =>
-                  setInputData({...inputData, iName: e.target.value})
+                  setInputData({...inputData, feItemName: e.target.value})
                 }
               />
             </Form.Group>
@@ -86,9 +86,9 @@ export default function AddItemModal({mountProps}) {
                 className={
                   error && error.iName ? "is-invalid" : !error ? "" : "is-valid"
                 }
-                value={inputData.iDescription}
+                value={inputData.feItemDesc}
                 onChange={(e) =>
-                  setInputData({...inputData, iDescription: e.target.value})
+                  setInputData({...inputData, feItemDesc: e.target.value})
                 }
               />
             </Form.Group>
@@ -105,7 +105,7 @@ export default function AddItemModal({mountProps}) {
                     : "is-valid"
                 }
                 onChange={(e) =>
-                  setInputData({...inputData, category: e.target.value})
+                  setInputData({...inputData, feCategory: e.target.value})
                 }
               >
                 <option>Open this select menu</option>
@@ -127,9 +127,9 @@ export default function AddItemModal({mountProps}) {
                     ? ""
                     : "is-valid"
                 }
-                value={inputData.stocks}
+                value={inputData.feQuantity}
                 onChange={(e) =>
-                  setInputData({...inputData, stocks: e.target.value})
+                  setInputData({...inputData, feQuantity: e.target.value})
                 }
               />
             </Form.Group>

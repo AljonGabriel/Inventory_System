@@ -54,3 +54,7 @@ maintain data integrity and confidentiality.
 
 Stay tuned for more exciting features as we continuously enhance our Inventory
 Management System to meet your evolving needs. Happy managing!
+
+# Dynamic Charts in Admin page
+
+![App Screenshot](screenshots/admin.jpg)
