@@ -28,7 +28,7 @@ const authUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid E-mail or Password");
   }
-  if (user.approve === true || user.role === "admin") {
+  if (user.approve === true || user.role === "admin") {a
     generateToken(res, user._id);
     res.status(201).json({
       _id: user._id,

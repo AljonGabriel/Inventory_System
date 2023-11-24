@@ -5,7 +5,6 @@ import AuditLogs from "../models/auditLogsModel.js";
 import ItemsChart from "../models/itemsChartModel.js";
 import ExcelJS from "exceljs";
 import fs from "fs";
-import {log} from "console";
 
 // @desc Add item
 // route GET /api/items/
